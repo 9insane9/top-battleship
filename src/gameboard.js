@@ -1,30 +1,33 @@
+const { hasSubsequence } = require('extra-array')
+
 const Ship = require('../src/ship')
 
 const Gameboard = function() {
   const boardState = []
   initializeBoard()
 
-  function placeShip(shipID, coordinate) {
+  //a
+  function placeShip(shipID, coordinate, axis) {
     const shipLength = shipYard[shipID].ship.length;
     
     try {
-      checkOverlap(shipLength, coordinate)
-  
-      for (let i = 0; i < shipLength; i++) {
-        boardState[coordinate] = `${shipID}`
-        coordinate++;
+      placement.checkBounds(shipLength, coordinate, axis)
+      placement.checkDuplicate(boardState, shipID)
+      placement.checkOverlap(boardState, shipLength, coordinate, axis)
+      
+      if (axis === "y") {
+        for (let i = 0; i < shipLength; i++) {
+          boardState[coordinate] = `${shipID}`
+          coordinate = coordinate + 10
+        }        
+      } else {
+        for (let i = 0; i < shipLength; i++) {
+          boardState[coordinate] = `${shipID}`
+          coordinate++;
+        }
       }
     } catch (error) {
       throw new Error(`Invalid placement: ${error.message}`)
-    }
-  }
-
-  function checkOverlap(shipLength, coordinate) {
-    for (let i = 0; i < shipLength; i++) {
-      if (boardState[coordinate] !== '') {
-        throw new Error('Ships cannot overlap!')
-      }
-      coordinate++
     }
   }
 
@@ -47,5 +50,95 @@ const shipYard = {
   battleship2: new Ship(3),
   cruiser1: new Ship(4),
 }
+
+const placement = (function(boardState) {
+  const rows = []
+  const columns = []
+  
+  initializeRowsColumns()
+
+  //b
+  function checkOverlap(boardState, shipLength, coordinate, axis) {
+    if (axis === "y") {
+      for (let i = 0; i < shipLength; i++) {
+        if (boardState[coordinate + i * 10] !== '') {
+          throw new Error('Ships cannot overlap! (V)')
+        }
+      }
+    } else {
+      for (let i = 0; i < shipLength; i++) {
+        if (boardState[coordinate + i] !== '') {
+          throw new Error('Ships cannot overlap! (H)')
+        }
+      }
+    }
+  }
+
+  //c
+  function checkDuplicate(boardState, shipID) {
+    if (boardState.includes(`${shipID}`)) {
+      throw new Error('Ship already on board!')
+    }
+  }
+
+  //d
+  function checkBounds(shipLength, coordinate, axis) {
+    const shipCoordinates = []
+
+    if (axis === "y") {
+      for (let i = 0; i < shipLength; i++) {
+        shipCoordinates.push(coordinate + i * 10)
+      }
+    } else {
+      for (let i = 0; i < shipLength; i++) {
+        shipCoordinates.push(coordinate + i)
+      }
+    }
+
+    if (axis === "y") {
+      for (let i = 0; i < columns.length; i++) {
+        if (hasSubsequence(columns[i], shipCoordinates)) {
+          return
+        }
+      }
+      throw new Error('Out of bounds! (V)')
+    } else {
+      for (let i = 0; i < rows.length; i++) {
+        if (hasSubsequence(rows[i], shipCoordinates)) {
+          return
+        }
+      }
+      throw new Error('Out of bounds! (H)')
+    }
+  }
+
+  function initializeRowsColumns() {
+    for (let i = 0; i < 10; i++) {
+      const row = []
+
+      for (let j = 0; j < 10; j++) {
+        row.push(i * 10 + j)
+      }
+      rows.push(row)
+    }
+
+    for (let i = 0; i < 10; i++) {
+      columns.push([])
+    }
+
+    for (let index = 0; index < 100; index++) {
+      const lastDigit = index % 10
+      columns[lastDigit].push(index)
+    }
+  }
+
+  return {
+    checkDuplicate, 
+    checkOverlap,
+    checkBounds,
+    rows,
+    columns,
+  }
+}())
 
 module.exports = Gameboard
