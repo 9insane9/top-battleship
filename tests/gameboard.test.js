@@ -35,17 +35,11 @@ it('cannot place ship out of bounds', () => {
 })
 
 //e
-// it('must leave one space between ships horizontally', () => {
-//   const board = new Gameboard()
-//   board.placeShip('battleship1', 0)
+it('must leave space between ships', () => {
+  const board = new Gameboard()
+  board.placeShip('battleship1', 0)
   
-//   expect(() => board.placeShip('battleship2', 3)).toThrow('Invalid placement: Must leave a gap (H)!')
-// })
+  expect(() => board.placeShip('battleship2', 3)).toThrow('Invalid placement: Must leave space!')
+  expect(() => board.placeShip('cruiser1', 13, "y")).toThrow('Invalid placement: Must leave space!')
 
-//f
-// it('must leave one space between ships vertically', () => {
-//   const board = new Gameboard()
-//   board.placeShip('battleship1', 0)
-  
-//   expect(() => board.placeShip('battleship2', 10)).toThrow('Invalid placement: Must leave a gap (V)!')
-// })
+})

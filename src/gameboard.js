@@ -8,12 +8,24 @@ const Gameboard = function() {
 
   //a
   function placeShip(shipID, coordinate, axis) {
-    const shipLength = shipYard[shipID].ship.length;
+    const shipLength = shipYard[shipID].ship.length
+    const shipCoordinates = []
+
+    if (axis === "y") {
+      for (let i = 0; i < shipLength; i++) {
+        shipCoordinates.push(coordinate + i * 10)
+      }
+    } else {
+      for (let i = 0; i < shipLength; i++) {
+        shipCoordinates.push(coordinate + i)
+      }
+    }
     
     try {
-      placement.checkBounds(shipLength, coordinate, axis)
+      placement.checkBounds(shipCoordinates, axis)
       placement.checkDuplicate(boardState, shipID)
       placement.checkOverlap(boardState, shipLength, coordinate, axis)
+      placement.checkAdjacent(boardState, shipCoordinates)
       
       if (axis === "y") {
         for (let i = 0; i < shipLength; i++) {
@@ -82,19 +94,7 @@ const placement = (function(boardState) {
   }
 
   //d
-  function checkBounds(shipLength, coordinate, axis) {
-    const shipCoordinates = []
-
-    if (axis === "y") {
-      for (let i = 0; i < shipLength; i++) {
-        shipCoordinates.push(coordinate + i * 10)
-      }
-    } else {
-      for (let i = 0; i < shipLength; i++) {
-        shipCoordinates.push(coordinate + i)
-      }
-    }
-
+  function checkBounds(shipCoordinates, axis) {
     if (axis === "y") {
       for (let i = 0; i < columns.length; i++) {
         if (hasSubsequence(columns[i], shipCoordinates)) {
@@ -110,6 +110,40 @@ const placement = (function(boardState) {
       }
       throw new Error('Out of bounds! (H)')
     }
+  }
+
+  
+  function checkAdjacent(boardState, shipCoordinates) {
+    //e
+    const adjacentCoordinates = []
+
+    shipCoordinates.forEach((coordinate) => {
+      let allCoordinates = []
+
+      allCoordinates.push(coordinate - 11)
+      allCoordinates.push(coordinate - 10)
+      allCoordinates.push(coordinate - 9)
+      allCoordinates.push(coordinate - 1)
+      allCoordinates.push(coordinate + 1)
+      allCoordinates.push(coordinate + 9)
+      allCoordinates.push(coordinate + 10)
+      allCoordinates.push(coordinate + 11)
+
+      allCoordinates.forEach((newCoordinate) => {
+        if (!adjacentCoordinates.includes(newCoordinate)
+        && newCoordinate >= 0
+        && newCoordinate <= 99) {
+          adjacentCoordinates.push(newCoordinate)
+        }
+      })      
+    })
+
+    adjacentCoordinates.forEach((coordinate) => {
+      if (boardState[coordinate] !== "") {
+        throw new Error('Must leave space!')
+      }
+    })
+
   }
 
   function initializeRowsColumns() {
@@ -136,6 +170,7 @@ const placement = (function(boardState) {
     checkDuplicate, 
     checkOverlap,
     checkBounds,
+    checkAdjacent,
     rows,
     columns,
   }
