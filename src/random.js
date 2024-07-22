@@ -1,11 +1,11 @@
-const Gameboard = require('../src/gameboard')
+const Gameboard = require('./gameboard')
 
 const round = function (randomLayoutFn = genRandomLayout) {
   const player1board = new Gameboard()
-  randomLayoutFn(player1board)
+  const player1randomBoard = randomLayoutFn(player1board)
   
   return {
-    player1board: player1board,
+    player1board: player1randomBoard,
   }
 }
 
@@ -18,16 +18,16 @@ function genRandomLayout(playerBoard, randomPlacementFn = genRandomPlacement) {
     while (!placed) {
       try {
         const placement = randomPlacementFn()
-        const position = placement.position
-        const orientation = placement.orientation
-        playerBoard.placeShip(key, position, orientation)
+        playerBoard.placeShip(key, placement.position, placement.orientation)
         placed = true
       }
       catch (error) {
-        // throw new Error(`${error.message}`)
+        console.error(`Error placing ship for key ${key}: ${error.message}`)
       }
     }
   })
+
+  return playerBoard
 }
 
 function genRandomPlacement() {
@@ -35,8 +35,8 @@ function genRandomPlacement() {
   const orientation = Math.random() < 0.5 ? "x" : "y"
 
   return {
-    position,
-    orientation,
+    position: position,
+    orientation: orientation,
   }
 }
 
