@@ -1,5 +1,5 @@
 const { hasSubsequence } = require('extra-array')
-const Ship = require('../src/ship')
+const Ship = require('./ship')
 
 const Gameboard = function() {
   const boardState = []

@@ -1,4 +1,4 @@
-const { genRandomLayout } = require('../src/random')
+const genRandomLayout = require('../src/random')
 const Gameboard = require('../src/gameboard')
 
 it('board contains correct elements', () => {

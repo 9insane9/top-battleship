@@ -1,14 +1,3 @@
-const Gameboard = require('./gameboard')
-
-const round = function (randomLayoutFn = genRandomLayout) {
-  const player1board = new Gameboard()
-  const player1randomBoard = randomLayoutFn(player1board)
-  
-  return {
-    player1board: player1randomBoard,
-  }
-}
-
 function genRandomLayout(playerBoard, randomPlacementFn = genRandomPlacement) {
   const shipYard = playerBoard.shipYard
 
@@ -40,5 +29,5 @@ function genRandomPlacement() {
   }
 }
 
-module.exports = { round, genRandomLayout }
+module.exports = genRandomLayout 
 
