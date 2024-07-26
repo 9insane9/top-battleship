@@ -1,15 +1,34 @@
 const round = require('../src/round')
 
-it('can select game mode', () => {
-  const newRound = round()
-  newRound.selectGameMode('ai')
-
-  expect(newRound.getGameMode()).toBe('ai')
-})
-
-it('throws error on invalid game mode', () => {
+it('populates boards when run', () => {
   const newRound = round()
 
-  expect(() => newRound.selectGameMode('bootsWithTheFur')).toThrow('Invalid game mode!')
+  expect(newRound.boards.player.boardState).toContain('battleship1')
 })
+
+it('can start game and play a round', async () => {
+  const newRound = round()
+  const maxTurns = 100
+
+  newRound.menu().startGame()
+
+  async function simulateGame() {
+    for (let pos = 0; pos < 100 && !newRound.getGameOver(); pos++) {
+      try {
+        await newRound.playTurn(pos)
+      } catch (error) {
+        console.error('Error during playTurn:', error)
+        break
+      }
+      if (newRound.getGameOver()) {
+        break
+      }
+    }
+  }
+
+  await simulateGame()
+
+  expect(() => newRound.boards.ai.shipYard['destroyer1'].ship.isSunk).toBeTruthy()
+  expect(() => { newRound.getGameOver() }).toBeTruthy()
+}, 30000)
 

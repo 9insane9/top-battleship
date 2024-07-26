@@ -43,3 +43,11 @@ it('must leave space between ships', () => {
   expect(() => board.placeShip('cruiser1', 13, "y")).toThrow('Invalid placement: Must leave space!')
 
 })
+
+it('board can receive attack', () => {
+  const board = new Gameboard()
+  board.placeShip('destroyer1', 0)
+  board.receiveAttack(0)
+
+  expect(board.shipYard['destroyer1'].ship.isSunk).toBeTruthy()
+})

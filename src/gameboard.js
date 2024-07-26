@@ -3,6 +3,19 @@ const Ship = require('./ship')
 
 const Gameboard = function() {
   const boardState = []
+
+  const shipYard = {
+    destroyer1: new Ship(1),
+    destroyer2: new Ship(1),
+    destroyer3: new Ship(1),
+    destroyer4: new Ship(1),
+    submarine1: new Ship(2),
+    submarine2: new Ship(2),
+    submarine3: new Ship(2),
+    battleship1: new Ship(3),
+    battleship2: new Ship(3),
+    cruiser1: new Ship(4),
+  }
   initializeBoard()
 
   //a
@@ -42,24 +55,18 @@ const Gameboard = function() {
     }
   }
 
+  function receiveAttack(pos) {
+    if (boardState[pos] !== '') {
+      return shipYard[boardState[pos]].hit()
+    }
+  }
+
   function initializeBoard() {
+    boardState.length = 0
     for (let i = 0; i < 100; i++) { boardState.push('') }
   }
 
-  const shipYard = {
-    destroyer1: new Ship(1),
-    destroyer2: new Ship(1),
-    destroyer3: new Ship(1),
-    destroyer4: new Ship(1),
-    submarine1: new Ship(2),
-    submarine2: new Ship(2),
-    submarine3: new Ship(2),
-    battleship1: new Ship(3),
-    battleship2: new Ship(3),
-    cruiser1: new Ship(4),
-  }
-
-  return { boardState, shipYard, placeShip }
+  return { boardState, shipYard, placeShip, initializeBoard, receiveAttack }
 }
 
 const placement = (function(boardState) {
