@@ -8,7 +8,6 @@ it('populates boards when run', () => {
 
 it('can start game and play a round', async () => {
   const newRound = round()
-  const maxTurns = 100
 
   newRound.menu().startGame()
 
