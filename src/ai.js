@@ -2,25 +2,23 @@ const smartAi = function(aiShots, playerBoard, aiAttackPosFn = randomAiAttackPos
   const state = {
     lastHitPos: null,
 
-    firstTargetTried: false,
-    targetsFiltered: false,
     lastTargetPos: null,
     lastTargetSuccess: false,
+    currentAimAxis: null,
     nextTargets: [],
     adjacentPos: 
       {
-        horizontal: [],
-        vertical: []
+        x: [],
+        y: [],
       },
     resetToRandom: function() {
-      this.firstTargetTried = false
-      this.targetsFiltered = false
       this.lastTargetPos = null
       this.lastTargetSuccess = false
+      this.currentAimAxis = null
       this.nextTargets.length = 0
 
-      this.adjacentPos.horizontal.length = 0
-      this.adjacentPos.vertical.length = 0
+      this.adjacentPos.x.length = 0
+      this.adjacentPos.y.length = 0
       },
   }
 
@@ -28,35 +26,28 @@ const smartAi = function(aiShots, playerBoard, aiAttackPosFn = randomAiAttackPos
     state.lastHitPos = aiAttackPosFn(aiShots)    
   } 
 
-  else if (''){ ////Priority 2: Check for nextTargets
+  else if (nextTargets.length){ ////Priority 2: Check for nextTargets
 
-    if('') { //First time: !state.firstTargetTried
-    //state.firstTargetTried = true //set flag
-
-    //randomly choose one target, removing it from targets list
-    //set target to lastTargetPos
-    //set target to lastHitPos
+    if(!state.lastTargetPos) { //First target, aka second shot
+      assignRandomTarget()
     } 
 
-    else { // if state.firstTargetTried && !state.targetsFiltered //filter once
-      //state.targetsFiltered = true //set flag
+    else if (state.lastTargetPos){ //after first shot: filter after every shot and shoot
 
-      //filter out wrong axis targets based on lastTargetSuccess (?), 
-      //and adjacentPos in the state with 2 arrays
+      if (!currentAimAxis) { //if not already calculated
+        //calculate current aim axis using lastTargetSuccess,
+      }
 
-      //state.lastTargetSuccess = false //reset
-    }
+      //filter targets to current axis
 
-    if('') { //Second time and onwards: if firstTargetTried
+      assignRandomTarget()
 
-      //randomly choose one target from filtered targets, removing it from targets list
-      //set target to lastTargetPos
-      //set target to lastHitPos
+      state.lastTargetSuccess = false //reset
     }
   
   } else { ////Priority 3: Random position
 
-    state.lastHitPos = aiAttackPosFn(aiShots) 
+    state.lastHitPos = aiAttackPosFn(aiShots)
   }
   
   /// check player board state and prepare next turn
@@ -64,34 +55,48 @@ const smartAi = function(aiShots, playerBoard, aiAttackPosFn = randomAiAttackPos
   let shipOnGameboard = playerBoard.boardState[state.lastHitPos]
   let shipInShipYard = playerBoard.shipYard[shipOnGameboard].ship
 
-  if (shipOnGameboard !== '') {//on hit
+  if (shipOnGameboard) {///on hit
 
-    if(state.lastHitPos === state.lastTargetPos) { // if was a target, remember
+    if(state.lastHitPos === state.lastTargetPos) { // remember if lastTargetSuccess
       state.lastTargetSuccess = true
     }
 
-    if (!shipInShipYard.isSunk()) {//if not sunk
+    if (!shipInShipYard.isSunk()) {//on hit: if not sunk
 
     //calculate adjacents aka nextTargets
-    //add only new adjacents to nextTargets 
+    //add only new adjacents to nextTargets, also filter out ones on shots list
     }
 
-    if (shipInShipYard.isSunk()) { //on sunk, soft reset to random
+    if (shipInShipYard.isSunk()) { //on hit: if sunk
 
-      //calculate all adjacents and diagonals and add to shots list
-      state.resetToRandom()
-    }
-
-    if (!shipOnGameboard) { //on miss soft reset to random
+      //calculate all adjacents and diagonals and add all new ones to shots list
       state.resetToRandom()
     }   
+  }
+
+  if (!shipOnGameboard) { //on miss
+    state.resetToRandom()
+  }
+
+  //helpers
+
+  function assignRandomTarget() {
+    const targets = state.nextTargets
+
+    if (targets.length === 0) throw new Error('No targets!')
+
+    const randomIndex = Math.floor(Math.random() * targets.length)
+    const randomTarget = targets[randomIndex]
+    targets.splice(randomIndex, 1)
+    state.lastHitPos = randomTarget
+    state.lastTargetPos = randomTarget
   }
 
 //for testing need whole state object
   return state.lastHitPos
 }
 
-//random ai turn
+//randomAiPos
 function randomAiAttackPosFn(aiShots) {
   let aiAttackPos
   do {
