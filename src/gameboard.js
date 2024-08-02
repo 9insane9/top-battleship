@@ -4,7 +4,7 @@ const Ship = require('./ship')
 const Gameboard = function() {
   const boardState = []
 
-  const shipYard = {
+  const fleet = {
     destroyer1: new Ship(1),
     destroyer2: new Ship(1),
     destroyer3: new Ship(1),
@@ -20,7 +20,7 @@ const Gameboard = function() {
 
   //a
   function placeShip(shipID, coordinate, axis) {
-    const shipLength = shipYard[shipID].ship.length
+    const shipLength = fleet[shipID].status.length
     const shipCoordinates = []
 
     if (axis === "y") {
@@ -50,6 +50,9 @@ const Gameboard = function() {
           coordinate++;
         }
       }
+
+      fleet[shipID].status.position = shipCoordinates
+
     } catch (error) {
       throw new Error(`Invalid placement: ${error.message}`)
     }
@@ -57,8 +60,12 @@ const Gameboard = function() {
 
   function receiveAttack(pos) {
     if (boardState[pos] !== '') {
-      return shipYard[boardState[pos]].hit()
+      return fleet[boardState[pos]].hit()
     }
+  }
+
+  function allShipsSunk() {
+    return Object.values(this.fleet).every(ship => ship.status.isSunk)
   }
 
   function initializeBoard() {
@@ -66,7 +73,7 @@ const Gameboard = function() {
     for (let i = 0; i < 100; i++) { boardState.push('') }
   }
 
-  return { boardState, shipYard, placeShip, initializeBoard, receiveAttack }
+  return { boardState, fleet, placeShip, initializeBoard, receiveAttack, allShipsSunk }
 }
 
 const placement = (function(boardState) {

@@ -44,10 +44,36 @@ it('must leave space between ships', () => {
 
 })
 
+it('ship status has correct position', () => {
+  const board = new Gameboard()
+  board.placeShip('battleship1', 0, "x")
+
+  expect(board.fleet['battleship1'].status.position).toStrictEqual([0, 1, 2])
+})
+
 it('board can receive attack', () => {
   const board = new Gameboard()
   board.placeShip('destroyer1', 0)
   board.receiveAttack(0)
 
-  expect(board.shipYard['destroyer1'].ship.isSunk).toBeTruthy()
+  expect(board.fleet['destroyer1'].status.isSunk).toBeTruthy()
 })
+
+it('board can correctly report if all ships sunk', () => {
+  const board = new Gameboard()
+
+  Object.values(board.fleet).forEach((ship) => {
+    ship.hit()
+    ship.hit()
+    ship.hit()
+  })
+
+  expect(board.allShipsSunk()).toBeFalsy()
+
+  Object.values(board.fleet).forEach((ship) => {
+    ship.hit()
+  })
+
+  expect(board.allShipsSunk()).toBeTruthy()
+})
+

@@ -1,7 +1,7 @@
 const Ship = require('../src/ship')
 
 it('creates new ship based on length', () => {
-  expect(new Ship(3).ship.length).toStrictEqual(3)
+  expect(new Ship(3).status.length).toStrictEqual(3)
 })
 
 it('ship can take a hit', () => {
@@ -20,6 +20,6 @@ it('can be sunk', () => {
   ship.hit();
   ship.hit();
 
-  expect(ship.ship.isSunk).toBe(true)
+  expect(ship.status.isSunk).toBe(true)
   
 })

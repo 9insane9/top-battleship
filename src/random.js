@@ -1,5 +1,5 @@
 function genRandomLayout(playerBoard, randomPlacementFn = genRandomPlacement) {
-  const shipYard = playerBoard.shipYard
+  const shipYard = playerBoard.fleet
 
   Object.keys(shipYard).forEach((key) => {
     let placed = false

@@ -40,13 +40,13 @@ const round = function (randomLayoutFn = genRandomLayout) {
     if (gameOver) throw new Error('Game is over!')
     if (shots.player.includes(playerAttackPos)) throw new Error('Position already shot!')
 
-    shots.player.push(playerAttackPos)
+    shots.player = shots.player.concat(playerAttackPos)
     boards.ai.receiveAttack(playerAttackPos)
     checkIfWin()
 
     if (!gameOver) {
       let aiAttackPos = aiAttackPosFn(shots.ai)
-      shots.ai.push(aiAttackPos)
+      shots.ai = shots.ai.concat(aiAttackPos)
       boards.player.receiveAttack(aiAttackPos)
       checkIfWin()
     }
@@ -54,11 +54,9 @@ const round = function (randomLayoutFn = genRandomLayout) {
 
   function checkIfWin() {
     let winner = null
-    const playerShips = Object.values(boards.player.shipYard)
-    const aiShips = Object.values(boards.ai.shipYard)
-  
-    const playerShipsSunk = playerShips.every(ship => ship.isSunk)
-    const aiShipsSunk = aiShips.every(ship => ship.isSunk)
+
+    const playerShipsSunk = boards.player.allShipsSunk()
+    const aiShipsSunk = boards.player.allShipsSunk()
   
     if (playerShipsSunk || aiShipsSunk) { gameOver = true }
     if (playerShipsSunk) winner = "ai"

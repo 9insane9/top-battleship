@@ -1,21 +1,22 @@
 const Ship = function(shipLength) {
-  const ship = {
+  const status = {
     length: shipLength, 
+    position: null,
     hits: 0, 
     isSunk: false,
   }
 
   function hit() {
-    ship['hits'] = ship['hits'] + 1
+    status.hits += 1
     isSunk()
-    return ship
+    return status
   }
 
   function isSunk() {
-    ship.hits === ship.length ? ship.isSunk = true : null
+    status.hits === status.length ? status.isSunk = true : null
   }
 
-  return { ship, hit }
+  return { status, hit }
 }
 
 module.exports = Ship

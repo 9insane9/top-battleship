@@ -6,7 +6,7 @@ it('populates boards when run', () => {
   expect(newRound.boards.player.boardState).toContain('battleship1')
 })
 
-it('can start game and play a round', async () => {
+it('can start game and finish game', async () => {
   const newRound = round()
 
   newRound.menu().startGame()
@@ -27,7 +27,7 @@ it('can start game and play a round', async () => {
 
   await simulateGame()
 
-  expect(() => newRound.boards.ai.shipYard['destroyer1'].ship.isSunk).toBeTruthy()
+  expect(() => newRound.boards.ai.fleet['destroyer1'].status.isSunk).toBeTruthy()
   expect(() => { newRound.getGameOver() }).toBeTruthy()
 }, 30000)
 
