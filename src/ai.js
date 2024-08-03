@@ -1,26 +1,26 @@
 const smartAi = function(aiShots, playerBoard, aiAttackPosFn = randomAiAttackPosFn) {
   const state = {
-    lastHitPos: null,
+                lastHitPos: null,
 
-    lastTargetPos: null,
-    lastTargetSuccess: false,
-    currentAimAxis: null,
-    nextTargets: [],
-    adjacentPos: 
-      {
-        x: [],
-        y: [],
-      },
-    resetToRandom: function() {
-      this.lastTargetPos = null
-      this.lastTargetSuccess = false
-      this.currentAimAxis = null
-      this.nextTargets.length = 0
+                lastTargetPos: null,
+                lastTargetSuccess: false,
+                currentAimAxis: null,
+                nextTargets: [],
+                adjacentPos: 
+                  {
+                    x: [],
+                    y: [],
+                  },
+                resetToRandom: function() {
+                  this.lastTargetPos = null
+                  this.lastTargetSuccess = false
+                  this.currentAimAxis = null
+                  this.nextTargets.length = 0
 
-      this.adjacentPos.x.length = 0
-      this.adjacentPos.y.length = 0
-      },
-  }
+                  this.adjacentPos.x.length = 0
+                  this.adjacentPos.y.length = 0
+                  },
+                }
 
   if (state.nextTargets.length){ ////Priority 1: Check for nextTargets
 
@@ -32,9 +32,7 @@ const smartAi = function(aiShots, playerBoard, aiAttackPosFn = randomAiAttackPos
       assignRandomTarget() //and then fire
     }
   
-  } else { ////Priority 2: Random position
-    state.lastHitPos = aiAttackPosFn(aiShots)
-  } 
+  } else { state.lastHitPos = aiAttackPosFn(aiShots) } ////Priority 2: Random position 
 
   state.lastTargetSuccess = false //reset after every shot
   
@@ -48,19 +46,15 @@ const smartAi = function(aiShots, playerBoard, aiAttackPosFn = randomAiAttackPos
 
     if(state.lastHitPos === state.lastTargetPos) { state.lastTargetSuccess = true }
 
-    if (!shipInFleet.isSunk()) {//on hit: if not sunk
-      addNewAdjacents()
-    }
+    if (!shipInFleet.isSunk()) { addNewAdjacents() } //on hit: if not sunk
 
     if (shipInFleet.isSunk()) { //on hit: if sunk    
-      markSurroundingAreaAsShot(shipPosition, aiShots)
+      markSurroundingAreaAsShot(shipInFleet.position, aiShots)
       state.resetToRandom()
     }   
   }
 
-  if (!shipOnGameboard) { //on miss
-    state.resetToRandom()
-  }
+  if (!shipOnGameboard) { state.resetToRandom() } //on miss
 
   //helpers
 
@@ -68,7 +62,7 @@ const smartAi = function(aiShots, playerBoard, aiAttackPosFn = randomAiAttackPos
     const newTargets = state.adjacentPos[state.currentAimAxis]
         .filter((position) => !state.nextTargets.includes(position))
 
-    state.nextTargets = state.nextTargets.concat(newTargets)
+        state.nextTargets = [...state.nextTargets, ...newTargets]
   }
 
   function assignRandomTarget() {
@@ -132,24 +126,23 @@ const smartAi = function(aiShots, playerBoard, aiAttackPosFn = randomAiAttackPos
     return all
   }
 
-  function markSurroundingAreaAsShot(aiShots) {
-    const shipPosition = shipInFleet.position
+  function markSurroundingAreaAsShot(shipPosition, aiShots) {
     let allCoordinates = [] //calculate adjacents and diagonals of all sunk ship positions
 
     shipPosition.forEach((coordinate) => {
-      allCoordinates.push(coordinate - 11)
-      allCoordinates.push(coordinate - 10)
-      allCoordinates.push(coordinate - 9)
-      allCoordinates.push(coordinate - 1)
-      allCoordinates.push(coordinate + 1)
-      allCoordinates.push(coordinate + 9)
-      allCoordinates.push(coordinate + 10)
-      allCoordinates.push(coordinate + 11)
+      allCoordinates.push(coordinate - 11, 
+                          coordinate - 10, 
+                          coordinate - 9, 
+                          coordinate - 1, 
+                          coordinate + 1, 
+                          coordinate + 9, 
+                          coordinate + 10, 
+                          coordinate + 11)
     })
 
     //filter range/already shot and return
     const surroundingPos = filterGridAndLegal(allCoordinates, aiShots)
-    aiShots = aiShots.concat(surroundingPos)
+    aiShots.push(...surroundingPos)
   }
 
 //for testing need whole state object

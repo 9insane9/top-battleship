@@ -1,5 +1,6 @@
 const Gameboard = require('./gameboard')
 const genRandomLayout = require('./random')
+const ai = require('./ai')
 
 const round = function (randomLayoutFn = genRandomLayout) {
   const boards = {
@@ -12,6 +13,8 @@ const round = function (randomLayoutFn = genRandomLayout) {
     ai: [],
   }
 
+  let aiAttackPosFn = randomAiAttackPosFn
+  let difficulty = "random"
   let gameStarted = false
   let gameOver = false
 
@@ -24,6 +27,13 @@ const round = function (randomLayoutFn = genRandomLayout) {
       return board
     }
 
+    function toggleDifficulty() {
+      if (gameStarted) throw new Error('Cannot change difficulty mid game!')
+      difficulty === "random" ? difficulty = "ai" : difficulty = "random"
+      difficulty === "random" ? aiAttackPosFn = ai : aiAttackPosFn = randomAiAttackPosFn
+      console.log(`difficulty set to ${difficulty}`)
+    }
+
     function startGame() {
       if (gameStarted) throw new Error('Game already started!')
       gameStarted = true
@@ -31,11 +41,12 @@ const round = function (randomLayoutFn = genRandomLayout) {
 
     return {
       generateRandomBoard,
+      toggleDifficulty,
       startGame
     }    
   }
 
-  const playTurn = function(playerAttackPos, aiAttackPosFn = randomAiAttackPosFn) {
+  const playTurn = function(playerAttackPos) {
     if (!gameStarted) throw new Error('Start game first!')
     if (gameOver) throw new Error('Game is over!')
     if (shots.player.includes(playerAttackPos)) throw new Error('Position already shot!')
@@ -79,17 +90,6 @@ const round = function (randomLayoutFn = genRandomLayout) {
     return gameOver
   }
 
-  //ai turn
-  function randomAiAttackPosFn(aiShots) {
-    let aiAttackPos
-    do {
-      aiAttackPos = Math.floor(Math.random() * 100)
-    } while (aiShots.includes(aiAttackPos))
-
-    return aiAttackPos
-  }
-  /////////
-
   menu().generateRandomBoard(boards.player)
   menu().generateRandomBoard(boards.ai)
 
@@ -100,8 +100,21 @@ const round = function (randomLayoutFn = genRandomLayout) {
     shots,
     playTurn,
     getGameOver,
+    checkIfWin,
     playAgain
   }
 }
+
+
+//ai turn
+function randomAiAttackPosFn(aiShots) {
+  let aiAttackPos
+  do {
+    aiAttackPos = Math.floor(Math.random() * 100)
+  } while (aiShots.includes(aiAttackPos))
+
+  return aiAttackPos
+}
+/////////
 
 module.exports = round
