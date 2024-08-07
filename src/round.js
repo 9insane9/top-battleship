@@ -8,12 +8,7 @@ const round = function (randomLayoutFn = genRandomLayout) {
     ai: new Gameboard(),
   }
 
-  const shots = {
-    player: [],
-    ai: [],
-  }
-
-  let aiAttackPosFn = randomAiAttackPosFn
+  let aiFn = randomAiAttackPosFn() //set default difficulty
   let difficulty = "random"
   let gameStarted = false
   let gameOver = false
@@ -30,7 +25,7 @@ const round = function (randomLayoutFn = genRandomLayout) {
     function toggleDifficulty() {
       if (gameStarted) throw new Error('Cannot change difficulty mid game!')
       difficulty === "random" ? difficulty = "ai" : difficulty = "random"
-      difficulty === "random" ? aiAttackPosFn = ai : aiAttackPosFn = randomAiAttackPosFn
+      difficulty === "random" ? aiFn = ai() : aiFn = randomAiAttackPosFn()
       console.log(`difficulty set to ${difficulty}`)
     }
 
@@ -49,16 +44,13 @@ const round = function (randomLayoutFn = genRandomLayout) {
   const playTurn = function(playerAttackPos) {
     if (!gameStarted) throw new Error('Start game first!')
     if (gameOver) throw new Error('Game is over!')
-    if (shots.player.includes(playerAttackPos)) throw new Error('Position already shot!')
+    if (boards.ai.shotsReceived.includes(playerAttackPos)) throw new Error('Position already shot!')
 
-    shots.player = shots.player.concat(playerAttackPos)
     boards.ai.receiveAttack(playerAttackPos)
     checkIfWin()
 
     if (!gameOver) {
-      let aiAttackPos = aiAttackPosFn(shots.ai)
-      shots.ai = shots.ai.concat(aiAttackPos)
-      boards.player.receiveAttack(aiAttackPos)
+      aiFn.attack(boards.player)
       checkIfWin()
     }
   }
@@ -93,27 +85,45 @@ const round = function (randomLayoutFn = genRandomLayout) {
   menu().generateRandomBoard(boards.player)
   menu().generateRandomBoard(boards.ai)
 
+  function getAiState() {
+    let state = aiFn.getState()
+    return state
+  }
+
   
   return {
     menu,
     boards,
-    shots,
     playTurn,
     getGameOver,
     checkIfWin,
-    playAgain
+    playAgain, 
+    getAiState
   }
 }
 
 
 //ai turn
-function randomAiAttackPosFn(aiShots) {
-  let aiAttackPos
-  do {
-    aiAttackPos = Math.floor(Math.random() * 100)
-  } while (aiShots.includes(aiAttackPos))
+function randomAiAttackPosFn() {
 
-  return aiAttackPos
+  function attack(playerBoard) {
+    let aiAttackPos
+    do {
+      aiAttackPos = Math.floor(Math.random() * 100)
+    } while (playerBoard.shotsReceived.includes(aiAttackPos))
+
+    playerBoard.receiveAttack(aiAttackPos)
+    console.log(playerBoard.shotsReceived)
+    console.log(`RandomAi attack performed at ${aiAttackPos}`)
+
+    return aiAttackPos
+  }
+
+  function getState() {
+    return "no state, dis random"
+  }
+  
+  return { attack, getState }
 }
 /////////
 

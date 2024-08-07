@@ -31,12 +31,12 @@ const customRandom = new TestRandomPlacement([
   {position: 4, orientation: "x"},  //1
   {position: 6, orientation: "x"},  //1
   {position: 20, orientation: "x"}, //2
-  {position: 21, orientation: "x"}, //error value
+  {position: 21, orientation: "x"}, // overlap
   {position: 40, orientation: "x"}, //2
   {position: 60, orientation: "x"}, //2
   {position: 24, orientation: "x"}, //3
   {position: 44, orientation: "x"}, //3
-  {position: 49, orientation: "x"}, //error value
+  {position: 49, orientation: "x"}, // out of bounds
   {position: 64, orientation: "y"}, //4
   ])
 

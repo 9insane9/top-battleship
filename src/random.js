@@ -1,12 +1,12 @@
 function genRandomLayout(playerBoard, randomPlacementFn = genRandomPlacement) {
-  const shipYard = playerBoard.fleet
+  const fleet = playerBoard.fleet
 
-  Object.keys(shipYard).forEach((key) => {
+  Object.keys(fleet).forEach((key) => {
     let placed = false
 
     while (!placed) {
       try {
-        const placement = randomPlacementFn()
+        const placement = randomPlacementFn(playerBoard)
         playerBoard.placeShip(key, placement.position, placement.orientation)
         placed = true
       }
@@ -19,8 +19,12 @@ function genRandomLayout(playerBoard, randomPlacementFn = genRandomPlacement) {
   return playerBoard
 }
 
-function genRandomPlacement() {
-  const position = Math.floor(Math.random() * 100)
+function genRandomPlacement(playerBoard) {
+  let position 
+
+  do {
+    position = Math.floor(Math.random() * 100)
+  } while (playerBoard.boardState[position] !== "")
   const orientation = Math.random() < 0.5 ? "x" : "y"
 
   return {
@@ -28,6 +32,8 @@ function genRandomPlacement() {
     orientation: orientation,
   }
 }
+
+
 
 module.exports = genRandomLayout 
 

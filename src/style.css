@@ -1,0 +1,79 @@
+body, html {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    /* user-select: none; */
+}
+
+.game-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid red;
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.menu {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border: 1px solid goldenrod;
+    width: clamp(200px, 70vw, 400px);
+    height: clamp(70px, 30vh, 200px);
+}
+
+.menu button {
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.grids-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;
+    box-sizing: border-box;
+    border: 1px solid green;
+}
+
+
+.player-grid, .ai-grid {
+    aspect-ratio: 1 / 1;
+    border: 1px solid green;
+    width: 100%;
+    max-width: 600px;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    box-sizing: border-box;
+}
+
+.player-cell, .ai-cell {
+    border: 1px solid blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+@media (max-width: 740px) {
+    .grids-container {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+
+    .player-grid, .ai-grid {
+        width: 90vw;
+        max-width: 45vh;
+    }
+}

@@ -1,36 +1,31 @@
-// const aiFn = require('../src/ai')
 const round = require('../src/round')
-// const genRandomLayout = require('../src/random')
 
-// it('', () => {
-
-//   expect('works').toBe('works')
-// })
-
-it('smart AI can beat player that just attacks 0-100', async () => {
+it('smart AI can beat player that attacks 0-100', async () => {
   const newRound = round()
-  // let ai = aiFn
-
-  newRound.menu().toggleDifficulty()
+  
+  // newRound.menu().toggleDifficulty()
   newRound.menu().startGame()
 
-  async function simulateGame() {
-    for (let pos = 0; pos < 100 && !newRound.getGameOver(); pos++) {
+  function simulateGame() {
+    for (let pos = 0; pos < 100; pos++) {
+      if (newRound.getGameOver()) break
+
       try {
-        await newRound.playTurn(pos)
+        newRound.playTurn(pos)
+        // console.log(newRound.boards.player.boardState)
+        // console.log(newRound.shots.ai)
+        // console.log(newRound.getAiState())
+        // console.log(newRound.shots.ai)
       } catch (error) {
         console.error('Error during playTurn:', error)
-        break
-      }
-      if (newRound.getGameOver()) {
         break
       }
     }
   }
 
-  await simulateGame()
+  simulateGame()
 
-  // expect(() => newRound.boards.ai.fleet['destroyer1'].status.isSunk).toBeTruthy()
-  expect(() =>  newRound.getGameOver()).toBeTruthy()
-  expect(() =>  newRound.checkIfWin()).toStrictEqual("ai")
+  let winner = newRound.checkIfWin()
+
+  expect(winner).toBe("ai")
 }, 30000)

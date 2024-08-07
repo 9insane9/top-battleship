@@ -6,26 +6,25 @@ it('populates boards when run', () => {
   expect(newRound.boards.player.boardState).toContain('battleship1')
 })
 
-it('can start game and finish game', async () => {
+it('can start game and finish game', () => {
   const newRound = round()
 
   newRound.menu().startGame()
 
-  async function simulateGame() {
-    for (let pos = 0; pos < 100 && !newRound.getGameOver(); pos++) {
+  function simulateGame() {
+    for (let pos = 0; pos < 100; pos++) {
+      if (newRound.getGameOver()) break
+
       try {
-        await newRound.playTurn(pos)
+        newRound.playTurn(pos)
       } catch (error) {
         console.error('Error during playTurn:', error)
-        break
-      }
-      if (newRound.getGameOver()) {
         break
       }
     }
   }
 
-  await simulateGame()
+  simulateGame()
 
   expect(() => newRound.boards.ai.fleet['destroyer1'].status.isSunk).toBeTruthy()
   expect(() => { newRound.getGameOver() }).toBeTruthy()
