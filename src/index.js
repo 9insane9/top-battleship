@@ -12,11 +12,12 @@ render.generateGrids()
 const playerGridEl = document.querySelector('.player-grid')
 const aiGridEl = document.querySelector('.ai-grid')
 
+render.startWaterEffect(playerGridEl, aiGridEl) //startWaterEffect
 render.renderShips(playerGridEl, gameRound.boards.player)
 
 document.addEventListener("DOMContentLoaded", () => {
   initEvents(gameRound)
-  display.renderShips(gameRound.boards.player.boardState)
+  render.renderShips(gameRound.boards.player.boardState)
 })
 
 function initEvents(gameRound) {

@@ -30,6 +30,7 @@ body, html {
 
 .menu {
     position: absolute;
+    z-index: 999;
     display: flex;
     gap: 10px;
     flex-direction: column;
@@ -81,12 +82,13 @@ body, html {
 }
 
 .player-cell, .ai-cell {
-    border: 1px solid rgb(89, 89, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 8px;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 
