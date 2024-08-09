@@ -19,6 +19,7 @@ const round = function (randomLayoutFn = genRandomLayout) {
       if (gameStarted) throw new Error('Play with what is already on the board!')
       board.initializeBoard()
       randomLayoutFn(board)
+      console.log(`Board generated for ${board}!`)
       return board
     }
 
@@ -32,6 +33,7 @@ const round = function (randomLayoutFn = genRandomLayout) {
     function startGame() {
       if (gameStarted) throw new Error('Game already started!')
       gameStarted = true
+    console.log(`Game started!`)
     }
 
     return {
@@ -45,6 +47,7 @@ const round = function (randomLayoutFn = genRandomLayout) {
     if (!gameStarted) throw new Error('Start game first!')
     if (gameOver) throw new Error('Game is over!')
     if (boards.ai.shotsReceived.includes(playerAttackPos)) throw new Error('Position already shot!')
+    console.log('Playing turn...')
 
     boards.ai.receiveAttack(playerAttackPos)
     checkIfWin()
@@ -64,7 +67,11 @@ const round = function (randomLayoutFn = genRandomLayout) {
     if (playerShipsSunk || aiShipsSunk) { gameOver = true }
     if (playerShipsSunk) winner = "ai"
     if (aiShipsSunk) winner = "player"
-  
+    
+    if (winner) {
+      console.log(`Winner is ...${winner}!`)
+    }
+
     return winner
   }
 

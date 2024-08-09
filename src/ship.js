@@ -2,6 +2,7 @@ const Ship = function(shipLength) {
   const status = {
     length: shipLength, 
     position: null,
+    axis: null,
     hits: 0, 
     isSunk: false,
   }

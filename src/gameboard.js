@@ -46,7 +46,7 @@ const Gameboard = function() {
           boardState[coordinate] = `${shipID}`
           coordinate = coordinate + 10
         }        
-      } else {
+      } else if (axis === "x"){
         for (let i = 0; i < shipLength; i++) {
           boardState[coordinate] = `${shipID}`
           coordinate++;
@@ -54,7 +54,8 @@ const Gameboard = function() {
       }
 
       fleet[shipID].status.position = shipCoordinates
-      console.log(`${shipID} placed at ${shipCoordinates}`)
+      fleet[shipID].status.axis = axis
+      console.log(`${shipID} placed at ${shipCoordinates}, orientation: ${axis}`)
 
     } catch (error) {
       throw new Error(`Invalid placement: ${error.message}`)

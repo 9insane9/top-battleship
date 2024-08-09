@@ -1,9 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Advent+Pro:ital,wght@0,100..900;1,100..900&family=Pixelify+Sans:wght@400..700&display=swap');
+
+
+.pixelify-sans-menu {
+  font-family: "Pixelify Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
 body, html {
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    /* background-color: #7FA1C3; */
     /* user-select: none; */
 }
 
@@ -20,9 +31,10 @@ body, html {
 .menu {
     position: absolute;
     display: flex;
+    gap: 10px;
     flex-direction: column;
     text-align: center;
-    border: 1px solid goldenrod;
+    /* border: 1px solid goldenrod; */
     width: clamp(200px, 70vw, 400px);
     height: clamp(70px, 30vh, 200px);
 }
@@ -30,7 +42,17 @@ body, html {
 .menu button {
     flex: 1;
     width: 100%;
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 30px;
+    color: white;
     box-sizing: border-box;
+    border: 5px solid #EB3678;
+    background: rgb(3, 52, 110, 0.5);
+}
+
+.menu button:hover {
+    color: rgb(3, 52, 110, 0.8);
+    background: rgba(87, 87, 87, 0.5);
 }
 
 .grids-container {
@@ -59,14 +81,16 @@ body, html {
 }
 
 .player-cell, .ai-cell {
-    border: 1px solid blue;
+    border: 1px solid rgb(89, 89, 255, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 8px;
+    box-sizing: border-box;
 }
 
 
-@media (max-width: 740px) {
+@media (max-width: 765px) {
     .grids-container {
         grid-template-columns: 1fr;
         justify-items: center;
