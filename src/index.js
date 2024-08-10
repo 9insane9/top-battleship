@@ -1,7 +1,6 @@
 import './style.css'
 import { display } from './display.js'
 
-// const display = require('../src/display')
 const round = require('../src/round')
 
 const render = display()
@@ -14,6 +13,8 @@ const aiGridEl = document.querySelector('.ai-grid')
 
 render.startWaterEffect(playerGridEl, aiGridEl) //startWaterEffect
 render.renderShips(playerGridEl, gameRound.boards.player)
+
+render.startFireEffect(playerGridEl, 50)
 
 document.addEventListener("DOMContentLoaded", () => {
   initEvents(gameRound)

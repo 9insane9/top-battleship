@@ -1,7 +1,11 @@
-import destroyer from './images/destroyer.png'
-import shipEnd from './images/shipEnd.png'
-import shipMiddle from './images/shipMiddle.png'
-import wave from './images/wave.png'
+import destroyer from './images/destroyer1.png'
+import shipEnd from './images/shipEnd1.png'
+import shipMiddle from './images/shipMiddle1.png'
+import wave from './images/wave1.png'
+
+import flame1 from './images/flame1.png'
+import flame2 from './images/flame2.png'
+import flame3 from './images/flame3.png'
  
  export const display = function() {
 
@@ -137,9 +141,46 @@ import wave from './images/wave.png'
     })
   }
 
+  function startFireEffect(gridEl, pos) {
+    const cells = Array.from(gridEl.children)
+    cells.forEach((cell) => {
+      if (cell.getAttribute("data-index") == pos) {
+        const fireImg = document.createElement("img")
+        fireImg.style.width = '100%'
+        fireImg.style.height = '100%'
+        fireImg.style.zIndex = '6'
+
+        cell.appendChild(fireImg)
+
+        fireEffect(fireImg)
+      }
+    })
+  }
+
+  function fireEffect(imgEl) {
+    const fireFrames = [flame1, flame2, flame3]
+    
+    let currentFrame = 0
+    let direction = 1
+
+    setInterval(() => {
+      currentFrame += direction
+
+      if (currentFrame === fireFrames.length - 1 || currentFrame === 0) {
+          direction *= -1
+      }
+
+      imgEl.src = fireFrames[currentFrame]
+      imgEl.style.width = '100%'
+      imgEl.style.height = '100%'
+      imgEl.style.zIndex = '6'
+    }, 500)
+  }
+
   return {
     generateGrids,
     startWaterEffect,
-    renderShips
+    renderShips,
+    startFireEffect
   }
  }
