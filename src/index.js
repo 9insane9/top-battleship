@@ -130,7 +130,7 @@ function updateDisplay(pos) {
   } else { //on miss for player
     sound.playNegative()
     render.splashAnimation(aiGridEl, pos)
-    setTimeout(() => { render.markMissedShotAnimation(aiGridEl, pos) }, 1500)
+    setTimeout(() => { render.markMissedShotAnimation(aiGridEl, pos) }, 1000)
     
   }
 
@@ -141,7 +141,7 @@ function updateDisplay(pos) {
     } else { //ai on miss
       render.splashAnimation(playerGridEl, aiHitPos)
 
-      setTimeout(() => { render.markMissedShotAnimation(playerGridEl, aiHitPos) }, 1500)
+      setTimeout(() => { render.markMissedShotAnimation(playerGridEl, aiHitPos) }, 1000)
       
     }
   }, 1000)
