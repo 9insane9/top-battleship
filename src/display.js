@@ -217,7 +217,7 @@ import splash3 from './images/splash3.png'
 
     cells.forEach((cell) => {
       if (cell.getAttribute("data-index") == pos) {
-        startAnimation(cell, splashFrames, false, 375)
+        startAnimation(cell, splashFrames, false, 250)
       }
     })
   }
