@@ -1,43 +1,41 @@
-// function genRandomLayout(playerBoard, randomPlacementFn = genRandomPlacement) {
-//   const fleet = playerBoard.fleet
+//default layout
 
-//   Object.keys(fleet).forEach((key) => {
-//     let placed = false
+const defaultLayout = function(playerBoard) {
+  
+  function defaultPlacement(values) {
+    this.values = values
+    this.index = 0
+  }
 
-//     while (!placed) {
-//       try {
-//         const placement = randomPlacementFn(playerBoard)
-//         playerBoard.placeShip(key, placement.position, placement.orientation)
-//         placed = true
-//       }
-//       catch (error) {
-//         console.error(`Error placing ship for key ${key}: ${error.message}`)
-//       }
-//     }
-//   })
+  defaultPlacement.prototype.nextValue = function() {
+    if (this.index < this.values.length) {
+      const current = this.values[this.index++]
+      return current
+    } else {
+      throw new Error("No more custom random values available")
+    }
+  }
 
-//   return playerBoard
-// }
+  const placements = new defaultPlacement([
+    {position: 0, orientation: "y"},  //1
+    {position: 12, orientation: "x"},  //1
+    {position: 46, orientation: "y"},  //1
+    {position: 93, orientation: "x"},  //1
+    {position: 17, orientation: "x"}, //2
+    {position: 41, orientation: "x"}, //2
+    {position: 75, orientation: "x"}, //2
+    {position: 4, orientation: "y"}, //3
+    {position: 38, orientation: "y"}, //3
+    {position: 60, orientation: "y"}, //4
+    ])
 
-// function genRandomPlacement(playerBoard) {
-//   let position 
+  const boundNextValue = placements.nextValue.bind(placements)
 
-//   do {
-//     position = Math.floor(Math.random() * 100)
-//   } while (playerBoard.boardState[position] !== "")
-//   const orientation = Math.random() < 0.5 ? "x" : "y"
+  const player1randomBoard = genRandomLayout(playerBoard, boundNextValue)
+  return player1randomBoard
+}
 
-//   return {
-//     position: position,
-//     orientation: orientation,
-//   }
-// }
-
-
-
-// module.exports = genRandomLayout 
-
-function genRandomLayout(playerBoard, randomPlacementFn = genRandomPlacement, maxAttempts = 1000, retryAttempts = 3) {
+function genRandomLayout(playerBoard, randomPlacementFn = genRandomPlacement, maxAttempts = 300, retryAttempts = 2) {
   const fleet = playerBoard.fleet
   let totalAttempts = 0
 
@@ -78,7 +76,10 @@ function genRandomLayout(playerBoard, randomPlacementFn = genRandomPlacement, ma
         console.warn(`Retry ${attempts}/${retryAttempts} for ship ${shipID}. Error: ${error.message}`)
         if (attempts >= retryAttempts) {
           console.error(`Failed to place ship ${shipID} after ${retryAttempts} retries.`)
-          throw error
+          console.log('Falling back to default layout...')
+          playerBoard.initializeBoard()
+          playerBoard = defaultLayout(playerBoard)
+          // throw error
         }
       }
     }
@@ -99,5 +100,6 @@ function genRandomPlacement(playerBoard) {
     orientation: orientation,
   }
 }
+
 
 module.exports = genRandomLayout

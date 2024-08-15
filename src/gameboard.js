@@ -76,8 +76,19 @@ const Gameboard = function() {
   }
 
   function initializeBoard() {
-    shotsReceived.length = 0
-    boardState.length = 0
+    fleet.destroyer1 = new Ship(1)
+    fleet.destroyer2 = new Ship(1)
+    fleet.destroyer3 = new Ship(1)
+    fleet.destroyer4 = new Ship(1)
+    fleet.submarine1 = new Ship(2)
+    fleet.submarine2 = new Ship(2)
+    fleet.submarine3 = new Ship(2)
+    fleet.battleship1 = new Ship(3)
+    fleet.battleship2 = new Ship(3)
+    fleet.cruiser1 = new Ship(4)
+
+    shotsReceived.length = 0 //reset received shots 
+    boardState.length = 0  //init empty boardState
     for (let i = 0; i < 100; i++) { boardState.push('') }
 
   }

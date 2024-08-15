@@ -1,49 +1,77 @@
 import './style.css'
 import { display } from './display.js'
+import { audio } from './audio.js'
 
 const round = require('../src/round')
 
 const render = display()
+const sound = audio()
 const gameRound = round()
-
-render.generateGrids()
 
 const playerGridEl = document.querySelector('.player-grid')
 const aiGridEl = document.querySelector('.ai-grid')
 
 render.startWaterAnimation(playerGridEl, aiGridEl) //startWaterEffect
-render.renderFleet(playerGridEl, gameRound.boards.player)
 
 document.addEventListener("DOMContentLoaded", () => {
+  render.generateGrids()
+  render.renderFleet(playerGridEl, gameRound.boards.player)
   initEvents(gameRound)
-  render.renderFleet(gameRound.boards.player.boardState)
+  sound.initMusicAndButton()
 })
 
 function initEvents(gameRound) {
   const boardBtn = document.querySelector('.generate-board-btn')
   const startBtn = document.querySelector('.start-game-btn')
+  const backToMenuBtn = document.querySelector('.back-to-menu-btn')
 
   boardBtn.addEventListener('click', () => {
+    sound.playClick()
     gameRound.menu().generateRandomBoard(gameRound.boards.player)
     render.renderFleet(playerGridEl, gameRound.boards.player)
   })
 
   startBtn.addEventListener('click', () => {
+    sound.playStart()
+    render.showGameStart()
     start()
+  })
+
+  backToMenuBtn.addEventListener('click', () => {
+    backToMenuEvent()
+  })
+
+  const allButtonEls = [ boardBtn, startBtn]
+  console.log(allButtonEls)
+
+  allButtonEls.forEach((buttonEl) => {
+    buttonEl.addEventListener('mouseenter', () => {
+      sound.playHover()
+    })
   })
 }
 
 function start() {
   aiGridEl.addEventListener('click', fireShotEvent)
+
+  const aiCellsArr = Array.from(aiGridEl.children)
+  aiCellsArr.forEach((aiCell) => {
+    aiCell.classList.add('can-aim')
+  })
+
   gameRound.menu().startGame()
 
   const menu = document.querySelector(".menu") //bye menu
-  menu.style.display = "none"
+  menu.classList.add('invisible')
 }
 
 function fireShotEvent(event) {
-  const pos = Number(event.target.getAttribute('data-index')) //problem: first time duplicate fires at 0 still
-  console.log(pos)
+  const indexString = event.target.getAttribute('data-index')
+  console.log(`position as string is: ${indexString}`)
+  const pos = Number(indexString)
+  console.log(`position as number is: ${pos}`)
+
+  console.log(`Position from player click is: ${pos}`)
   const aiShotsReceived = gameRound.boards.ai.shotsReceived
   const isNewPosition = !aiShotsReceived.includes(pos)
 
@@ -58,13 +86,29 @@ function fireShotEvent(event) {
     updateDisplay(pos)
 
     let gameOver = gameRound.getGameOver()
+
     if (gameOver) {
       aiGridEl.removeEventListener('click', fireShotEvent)
+      Array.from(aiGridEl.children).forEach((aiCell) => { aiCell.classList.remove('can-aim') })
 
-      const menu = document.querySelector(".menu") //bye menu
-      menu.style.display = "flex"
+      let winner = gameRound.checkIfWin()
+      render.showGameOver(winner)
+      sound.playEnd(winner)
+      
     }
-  } else { return }
+  }
+}
+
+function backToMenuEvent() {
+  const menuEl = document.querySelector('.menu')
+  const gameOverEl = document.querySelector('.game-over')
+
+  console.log(gameOverEl)
+
+  gameOverEl.classList.add('invisible')
+  menuEl.classList.remove('invisible')
+
+  resetGame(gameRound)
 }
 
 function updateDisplay(pos) {
@@ -80,11 +124,13 @@ function updateDisplay(pos) {
 
   //on hit for player
   if (aiShipInFleet) {
+    sound.playPositive()
     render.startFireAnimation(aiGridEl, pos)
     render.markHitAndRenderShipAnimation(aiGridEl, pos, aiShipInFleet, gameRound)
   } else { //on miss for player
+    sound.playNegative()
     render.splashAnimation(aiGridEl, pos)
-    setTimeout(() => { render.markMissedShotAnimation(aiGridEl, pos) }, 1510)
+    setTimeout(() => { render.markMissedShotAnimation(aiGridEl, pos) }, 1500)
     
   }
 
@@ -95,8 +141,15 @@ function updateDisplay(pos) {
     } else { //ai on miss
       render.splashAnimation(playerGridEl, aiHitPos)
 
-      setTimeout(() => { render.markMissedShotAnimation(playerGridEl, aiHitPos) }, 1510)
+      setTimeout(() => { render.markMissedShotAnimation(playerGridEl, aiHitPos) }, 1500)
       
     }
   }, 1000)
+}
+
+function resetGame(gameRound) {
+  render.clearDisplay(playerGridEl, aiGridEl)
+  gameRound.playAgain()
+  render.renderFleet(playerGridEl, gameRound.boards.player)
+
 }

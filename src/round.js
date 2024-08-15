@@ -62,9 +62,12 @@ const round = function (randomLayoutFn = genRandomLayout) {
     let winner = null
 
     const playerShipsSunk = boards.player.allShipsSunk()
-    const aiShipsSunk = boards.player.allShipsSunk()
+    const aiShipsSunk = boards.ai.allShipsSunk()
   
-    if (playerShipsSunk || aiShipsSunk) { gameOver = true }
+    if (playerShipsSunk || aiShipsSunk) { 
+      gameOver = true
+      console.log("Game is over!")
+    }
     if (playerShipsSunk) winner = "ai"
     if (aiShipsSunk) winner = "player"
     
@@ -76,13 +79,16 @@ const round = function (randomLayoutFn = genRandomLayout) {
   }
 
   function playAgain() {
-    if (!gameStarted) throw new Error(`Play "again"? You haven't even started!`)
-    if (gameStarted && !gameOver) throw new Error('Finish current game!')
+    // if (!gameStarted) throw new Error(`Play "again"? You haven't even started!`)
+    gameStarted = false
+    gameOver = false
+    // if (gameStarted && !gameOver) throw new Error('Finish current game!')
+
+    boards.player.initializeBoard()
+    boards.ai.initializeBoard()
 
     menu().generateRandomBoard(boards.player)
     menu().generateRandomBoard(boards.ai)
-    gameStarted = false
-    gameOver = false
   }
 
   function getGameOver() {

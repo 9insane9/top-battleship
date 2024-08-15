@@ -14,7 +14,7 @@ it('random layout function places ships randomly until all are placed', () => {
   function TestRandomPlacement(values) {
     this.values = values
     this.index = 0
-}
+  }
 
   TestRandomPlacement.prototype.nextValue = function() {
       if (this.index < this.values.length) {
