@@ -283,7 +283,7 @@ import splash3 from './images/splash3.png'
     gameOverEl.classList.remove('invisible')
     
     if (winner === "ai") { 
-      gameOverTextEl.color = "red"
+      gameOverTextEl.style.color = "red"
       gameOverTextEl.textContent = "You have lost!"
      }
     
