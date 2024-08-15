@@ -38,21 +38,21 @@ export const audio = function() {
       effectEl.volume = 0.35
       winLoseEl.volume = 0.6
       menuSoundEl.volume = 0.5
-      // soundBtnEl.textContent = '🔊'
-      soundBtnEl.textContent = '\u{1F50A}'
+      soundBtnEl.textContent = '🔊'
+      // soundBtnEl.textContent = '\u{1F50A}'
       musicEl.play()
       } else if (isMusicStarted && isMusicPlaying) {
         isMusicPlaying = false
-        // soundBtnEl.textContent = '🔇'
-        soundBtnEl.textContent = '\u{1F507}'
+        soundBtnEl.textContent = '🔇'
+        // soundBtnEl.textContent = '\u{1F507}'
         musicEl.volume = 0
         effectEl.volume = 0
         menuSoundEl.volume = 0
         winLoseEl.volume = 0
       } else if (isMusicStarted && !isMusicPlaying) {
         isMusicPlaying = true
-        // soundBtnEl.textContent = '🔊'
-        soundBtnEl.textContent = '\u{1F50A}'
+        soundBtnEl.textContent = '🔊'
+        // soundBtnEl.textContent = '\u{1F50A}'
         musicEl.volume = 0.8
         effectEl.volume = 0.35
         menuSoundEl.volume = 0.5
