@@ -15,6 +15,15 @@ import splash1 from './images/splash1.png'
 import splash2 from './images/splash2.png'
 import splash3 from './images/splash3.png'
 
+import playerIndicator1 from './images/indicators/pi1.png'
+import playerIndicator2 from './images/indicators/pi2.png'
+import playerIndicator3 from './images/indicators/pi3.png'
+import playerIndicator4 from './images/indicators/pi4.png'
+import aiIndicator1 from './images/indicators/aii1.png'
+import aiIndicator2 from './images/indicators/aii2.png'
+import aiIndicator3 from './images/indicators/aii3.png'
+import aiIndicator4 from './images/indicators/aii4.png'
+
  export const display = function() {
 
   const fireFrames = [flame1, flame2, flame3]
@@ -28,16 +37,78 @@ import splash3 from './images/splash3.png'
 
     for (let i = 0; i < 100; i++) {
       const divPlayer = document.createElement("div")
+      divPlayer.classList.add("cell")
       divPlayer.classList.add("player-cell")
       divPlayer.setAttribute("data-index", i)
       playerGridContainer.appendChild(divPlayer)
 
       const divAi = document.createElement("div")
+      divAi.classList.add("cell")
       divAi.classList.add("ai-cell")
       divAi.setAttribute("data-index", i)
       aiGridContainer.appendChild(divAi)
     }
     console.log('Grids created!')
+  }
+
+  function generateIndicators() {
+    const playerShipInfoEl = document.querySelector('.player-ship-info')
+    const aiShipInfoEl = document.querySelector('.ai-ship-info')
+
+    const playerIndicators = {
+      playerShip1: createImage(playerIndicator1),
+      playerShip2: createImage(playerIndicator2),
+      playerShip3: createImage(playerIndicator3),
+      playerShip4: createImage(playerIndicator4)
+    }
+
+    const aiIndicators = {
+      aiShip1: createImage(aiIndicator1),
+      aiShip2: createImage(aiIndicator2),
+      aiShip3: createImage(aiIndicator3),
+      aiShip4: createImage(aiIndicator4)
+    }
+
+
+    function createTextElement(text, className) {
+      const p = document.createElement('p');
+      p.textContent = 0;
+      p.className = className;
+      return p;
+    }
+
+    function createSpacer() {
+      const p = document.createElement('p');
+      p.textContent = '|';
+      p.className = 'spacer';
+      return p;
+    }
+
+    function appendAndStyleIndicators(indicators, container, baseClassName) {
+      Object.entries(indicators).forEach(([key, image], index, array) => {
+        image.className = "ship-icon"
+        container.appendChild(image);
+
+        image.style.height = '100%';
+        image.style.width = '100%';
+        image.style.objectFit = 'cover';
+
+        const textClassName = `ship-text ${baseClassName}-ships${index + 1}`
+        const textElement = createTextElement(key, textClassName)
+        container.appendChild(textElement)
+
+        // append a spacer if not last element
+        if (index < array.length - 1) {
+          const spacer = createSpacer()
+          spacer.className = "ship-spacer"
+          container.appendChild(spacer)
+        }
+      })
+    }
+
+    ///
+    appendAndStyleIndicators(playerIndicators, playerShipInfoEl, 'player');
+    appendAndStyleIndicators(aiIndicators, aiShipInfoEl, 'ai');
   }
 
   function startWaterAnimation(grid1, grid2) {
@@ -51,6 +122,7 @@ import splash3 from './images/splash3.png'
 
     grids.forEach((grid) => {
       const children = Array.from(grid.children)
+              .filter(child => child.classList.contains('cell'))
 
       children.forEach((child, index) => {
         const rowIndex = Math.floor(index / 10)
@@ -73,7 +145,8 @@ import splash3 from './images/splash3.png'
   function swapFrame(...grids) {
     grids.forEach((grid) => {
       const children = Array.from(grid.children)
-
+              .filter(child => child.classList.contains('cell'))
+              
       children.forEach((child, index) => {
         const rowIndex = Math.floor(index / 10)
 
@@ -98,23 +171,25 @@ import splash3 from './images/splash3.png'
   }  
 
 
-  function createImage(src, axis, isStart = false, isLast = false) {
+  function createImage(src, axis = null, isStart = false, isLast = false) {
     const img = document.createElement('img')
     img.style.pointerEvents = "none"
-    img.style.zIndex = "5"
     img.src = src
     img.style.width = '100%'
     img.style.height = '100%'
     img.style.zIndex = '5'
-    if (axis === 'x') {
-      img.style.transform = isLast ? 'rotate(90deg) scaleX(-1)' : 'rotate(90deg)'
-      img.style.transformOrigin = 'center'
-      if (isStart) {
-        img.style.transform = 'rotate(-90deg) scaleX(-1)'
+    
+    if (axis) {
+      if (axis === 'x') {
+        img.style.transform = isLast ? 'rotate(90deg) scaleX(-1)' : 'rotate(90deg)'
+        img.style.transformOrigin = 'center'
+        if (isStart) {
+          img.style.transform = 'rotate(-90deg) scaleX(-1)'
+        }
+      } else if (axis === 'y') {
+        img.style.transform = isLast ? 'scaleY(-1)' : ''
+        img.style.transformOrigin = 'center'
       }
-    } else if (axis === 'y') {
-      img.style.transform = isLast ? 'scaleY(-1)' : ''
-      img.style.transformOrigin = 'center'
     }
     return img
   }
@@ -124,7 +199,10 @@ import splash3 from './images/splash3.png'
     const length = ship.status.length
 
     coordinates.forEach((coord, index) => {
-      const cell = gridEl.children[coord]
+      const allCells = Array.from(gridEl.children)
+              .filter(child => child.classList.contains('cell'))
+
+      const cell = allCells[coord]
 
       const shipMarkElement = cell.querySelector(".ship-mark")
       if (shipMarkElement) { shipMarkElement.remove() }
@@ -146,8 +224,11 @@ import splash3 from './images/splash3.png'
 
   function renderFleet(gridEl, board) {
 
-    Array.from(gridEl.children).forEach(child => {
-      child.innerHTML = ''
+    const allCells = Array.from(gridEl.children)
+              .filter(child => child.classList.contains('cell'))
+
+    allCells.forEach(cell => {
+      cell.innerHTML = ''
     })
 
     Object.keys(board.fleet).forEach(shipID => {
@@ -161,13 +242,60 @@ import splash3 from './images/splash3.png'
     console.log('Fleet rendered!')
   }
 
+  // function clearDisplay(...gridEls) {
+  //   gridEls.forEach(gridEl => {
+  //     const imgElements = gridEl.querySelectorAll('img')
+  //             // .filter(child => !child.classList.contains('ship-icon'))
+      
+  //     imgElements.forEach(img => img.remove())
+  //   })
+  // }
+
   function clearDisplay(...gridEls) {
     gridEls.forEach(gridEl => {
-      const imgElements = gridEl.querySelectorAll('img')
-      
+      const imgElements = Array.from(gridEl.querySelectorAll('img'))
+        .filter(img => !img.classList.contains('ship-icon'))
+  
       imgElements.forEach(img => img.remove())
     })
   }
+
+  function updateIndicators(gameRound) {
+
+    const playerIndicatorStates = {
+      ships1: document.querySelector(".player-ships1"),
+      ships2: document.querySelector(".player-ships2"),
+      ships3: document.querySelector(".player-ships3"),
+      ships4: document.querySelector(".player-ships4")
+    }
+    
+    const aiIndicatorStates = {
+      ships1: document.querySelector(".ai-ships1"),
+      ships2: document.querySelector(".ai-ships2"),
+      ships3: document.querySelector(".ai-ships3"),
+      ships4: document.querySelector(".ai-ships4")
+    }
+
+    const playerShipsLeft = gameRound.boards.player.countShipsLeft()
+    const aiShipsLeft = gameRound.boards.ai.countShipsLeft()
+
+    console.log(aiShipsLeft)
+
+    playerIndicatorStates.ships1.textContent = playerShipsLeft.ships1;
+    playerIndicatorStates.ships2.textContent = playerShipsLeft.ships2;
+    playerIndicatorStates.ships3.textContent = playerShipsLeft.ships3;
+    playerIndicatorStates.ships4.textContent = playerShipsLeft.ships4;
+
+    // Update AI indicators
+    aiIndicatorStates.ships1.textContent = aiShipsLeft.ships1;
+    aiIndicatorStates.ships2.textContent = aiShipsLeft.ships2;
+    aiIndicatorStates.ships3.textContent = aiShipsLeft.ships3;
+    aiIndicatorStates.ships4.textContent = aiShipsLeft.ships4;
+
+    console.log("updated!")
+  }
+
+  
 
   //animations
 
@@ -292,6 +420,8 @@ import splash3 from './images/splash3.png'
 
   return {
     generateGrids,
+    generateIndicators,
+    updateIndicators,
     startWaterAnimation,
     renderFleet,
     startFireAnimation,

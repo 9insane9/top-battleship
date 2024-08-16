@@ -75,6 +75,30 @@ const Gameboard = function() {
     return Object.values(this.fleet).every(ship => ship.status.isSunk)
   }
 
+  function countShipsLeft() {
+    const shipsLeft = {
+      ships1: 0,
+      ships2: 0,
+      ships3: 0,
+      ships4: 0,
+    }
+
+    Object.values(this.fleet).forEach(ship => {
+      const length = ship.status.length
+      const isSunk = ship.status.isSunk
+
+      if (!isSunk) {
+
+        if (length === 1) shipsLeft.ships1++
+        else if (length === 2) shipsLeft.ships2++
+        else if (length === 3) shipsLeft.ships3++
+        else if (length === 4) shipsLeft.ships4++
+    }
+    })
+
+    return shipsLeft
+  }
+
   function initializeBoard() {
     fleet.destroyer1 = new Ship(1)
     fleet.destroyer2 = new Ship(1)
@@ -98,7 +122,8 @@ const Gameboard = function() {
           fleet, 
           placeShip, 
           initializeBoard, 
-          receiveAttack, 
+          receiveAttack,
+          countShipsLeft, 
           allShipsSunk }
 }
 

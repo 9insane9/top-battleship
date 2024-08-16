@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
   render.generateGrids()
   render.renderFleet(playerGridEl, gameRound.boards.player)
   initEvents(gameRound)
+  render.generateIndicators() //indicators
+  render.updateIndicators(gameRound)
   sound.initMusicAndButton()
 })
 
@@ -84,6 +86,7 @@ function fireShotEvent(event) {
     gameRound.playTurn(pos) 
 
     updateDisplay(pos)
+    render.updateIndicators(gameRound)
 
     let gameOver = gameRound.getGameOver()
 
@@ -151,5 +154,6 @@ function resetGame(gameRound) {
   render.clearDisplay(playerGridEl, aiGridEl)
   gameRound.playAgain()
   render.renderFleet(playerGridEl, gameRound.boards.player)
+  render.updateIndicators(gameRound)
 
 }

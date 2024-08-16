@@ -52,8 +52,8 @@ body, html {
     font-family: "PT Sans", sans-serif;
     font-size: 46px;
     position: absolute;
-    top: 5%;
-    left: 5%;
+    top: 20px;
+    left: 20px;
     z-index: 999;
     color: #ff0460ad;
     box-sizing: border-box;
@@ -84,6 +84,8 @@ body, html {
 
 .game-start-text {
     z-index: 1200;
+    overflow: hidden;
+    white-space: nowrap;
     color: rgb(0, 255, 85);
     text-shadow: 2px 1px 2px rgb(0, 0, 0);
     position: absolute;
@@ -104,6 +106,7 @@ body, html {
     transform: translate(-50%, -50%);
     animation: resize 3s infinite;
     white-space: nowrap;
+    overflow: hidden;
   }
   
   @keyframes resize {
@@ -171,27 +174,26 @@ body, html {
 /* GRIDS */
 .grids-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     align-items: center;
     justify-content: center;
     padding: 10px 20px;
-    gap: 20px;
+    gap: 30px;
     width: 100%;
     max-width: 1000px;
     box-sizing: border-box;
-    /* border: 1px solid green; */
 }
 
 
 .player-grid, .ai-grid {
     aspect-ratio: 1 / 1;
-    /* border: 2px solid black; */
     width: 100%;
     max-width: 600px;
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
     box-sizing: border-box;
+    position: relative;
 }
 
 .player-grid {
@@ -212,13 +214,63 @@ body, html {
     overflow: hidden;
 }
 
+/* cell hover only while in game */
+.can-aim:hover { 
+    border: 3px solid goldenrod;
+}
+
+/* stelth */
 .invisible {
     display: none;
 }
 
-/* cell hover only while in game */
-.can-aim:hover { 
-    border: 3px solid goldenrod;
+/* INDICATORS */
+.indicator {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 20px;
+    display: flex;
+    pointer-events: none;
+    width: 80%;
+    height: 40px;
+    /* border: 2px solid greenyellow;  */
+    z-index: 998;
+    position: absolute;
+    top: -12%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: none;
+}
+
+.player-indicator {
+    color: #EB3678;
+}
+
+.ai-indicator {
+    color: goldenrod;
+}
+
+
+.ship-info {
+    /* border: 2px solid rgb(234, 0, 255); */
+    display: flex;
+    width: 20vw;
+    flex-grow: 1;
+    justify-content: space-between; /* Distribute items evenly with space around them */
+    align-items: center;
+}
+
+.ship-text {
+    margin-right: 10px;
+    /* margin-top: 25px; */
+}
+
+.ship-spacer {
+    /* margin-top: 25px; */
+    color: aqua;
+}
+
+.ship-info, .ship-text {
+    vertical-align: middle;
 }
 
 
@@ -231,5 +283,37 @@ body, html {
     .player-grid, .ai-grid {
         width: 90vw;
         max-width: 45vh;
+        position: relative;
+    }
+
+    .indicator {
+        font-size: 14px;
+        height: 20px;
+        width: 50%;
+        transform: none;
+        padding: none;
+    }
+
+    .player-ship-info > .ship-text {
+        vertical-align: middle;
+        margin-bottom: 15px;
+    }
+
+    .player-indicator {
+        top: 101.6%;
+        left: -5%;
+    }   
+
+    .ai-indicator {
+        top: -30px;
+        right: -5%;
+    }
+
+    .ship-info {
+        width: 100%;
+    }
+
+    .ship-text, .ship-spacer {
+        margin-right: 5px;
     }
 }
