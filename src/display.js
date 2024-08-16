@@ -1,7 +1,8 @@
 import destroyer from './images/destroyer.png'
 import shipEnd from './images/shipEnd.png'
 import shipMiddle from './images/shipMiddle.png'
-import wave from './images/finalWave.png'
+import wave1 from './images/waveFrame1.png'
+import wave2 from './images/waveFrame2.png'
 
 import flame1 from './images/flame1.png'
 import flame2 from './images/flame2.png'
@@ -42,7 +43,7 @@ import splash3 from './images/splash3.png'
   function startWaterAnimation(grid1, grid2) {
     generateWater(grid1, grid2)
     setInterval(() => {
-      swapAlignment(grid1, grid2)
+      swapFrame(grid1, grid2)
     }, 1000)
   }
 
@@ -55,9 +56,9 @@ import splash3 from './images/splash3.png'
         const rowIndex = Math.floor(index / 10)
 
         if (rowIndex % 2 === 0) { //even rows
-          child.style.backgroundImage = `url('${wave}') no-repeat top 5px center`
+          child.style.backgroundImage = `url('${wave1}')`
         } else { // odd rows
-          child.style.backgroundImage = `url('${wave}') no-repeat bottom 5px center`
+          child.style.backgroundImage = `url('${wave2}')`
         }
 
         child.style.overflow = "hidden"
@@ -67,9 +68,9 @@ import splash3 from './images/splash3.png'
     })
   }
 
-  let isTopAligned = true //track alignment
+  let isFirstFrame = true //track alignment
 
-  function swapAlignment(...grids) {
+  function swapFrame(...grids) {
     grids.forEach((grid) => {
       const children = Array.from(grid.children)
 
@@ -78,13 +79,13 @@ import splash3 from './images/splash3.png'
 
         //re-align based on state
         if (rowIndex % 2 === 0) {
-          child.style.background = isTopAligned
-            ? `url('${wave}') no-repeat top center`
-            : `url('${wave}') no-repeat bottom center`
+          child.style.background = isFirstFrame
+            ? `url('${wave2}')`
+            : `url('${wave1}')`
         } else {
-          child.style.background = isTopAligned
-            ? `url('${wave}') no-repeat bottom center`
-            : `url('${wave}') no-repeat top center`
+          child.style.background = isFirstFrame
+            ? `url('${wave1}')`
+            : `url('${wave2}')`
         }
 
         child.style.overflow = "hidden"
@@ -93,7 +94,7 @@ import splash3 from './images/splash3.png'
       })
     })
 
-    isTopAligned = !isTopAligned
+    isFirstFrame = !isFirstFrame
   }  
 
 
@@ -167,10 +168,6 @@ import splash3 from './images/splash3.png'
       imgElements.forEach(img => img.remove())
     })
   }
-
-  //fleet helpers
-
-  
 
   //animations
 
