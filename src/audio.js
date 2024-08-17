@@ -24,9 +24,7 @@ export const audio = function() {
   musicEl.setAttribute('loop', 'loop')
 
   soundBtnImageEl.src = soundOff
-  musicEl.style.display = "none"
-  effectEl.style.display = "none"
-  winLoseEl.style.display = "none"
+
   winLoseEl.volume = 0
   effectEl.volume = 0
   menuSoundEl.volume = 0
