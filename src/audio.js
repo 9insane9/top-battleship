@@ -13,23 +13,55 @@ import soundOn from './images/soundOn.svg'
 export const audio = function() {
   const soundBtnEl = document.querySelector('.sound-btn')
   const soundBtnImageEl = document.querySelector('.sound-btn-image')
-  const musicEl = document.createElement('audio')
-  const effectEl = document.createElement('audio')
-  const menuSoundEl = document.createElement('audio')
-  const winLoseEl = document.createElement('audio')
+  soundBtnImageEl.src = soundOff
+
+  const mediaEls = {
+    music: document.createElement('audio'),
+    click: document.createElement('audio'),
+    hover: document.createElement('audio'),
+    positive: document.createElement('audio'),
+    negative: document.createElement('audio'),
+    start: document.createElement('audio'),
+    win: document.createElement('audio'),
+    lose: document.createElement('audio'),
+  }
+
+  const volumeMixer = {
+    music: 0.8,
+    sfx: 0,
+  }
+
+  initSounds()
 
   let isMusicStarted = false
   let isMusicPlaying = false
 
-  musicEl.setAttribute('loop', 'loop')
-
-  soundBtnImageEl.src = soundOff
-
-  winLoseEl.volume = 0
-  effectEl.volume = 0
-  menuSoundEl.volume = 0
-  musicEl.volume = 0.8
-  musicEl.src = music
+  function initSounds() {
+    mediaEls.music.setAttribute('loop', 'loop')
+    mediaEls.music.src = music
+    mediaEls.music.volume = 0
+  
+    mediaEls.click.src = click
+    mediaEls.click.volume = 0
+  
+    mediaEls.hover.src = hover
+    mediaEls.hover.volume = 0
+  
+    mediaEls.positive.src = positive
+    mediaEls.positive.volume = 0
+  
+    mediaEls.negative.src = negative
+    mediaEls.negative.volume = 0
+  
+    mediaEls.start.src = start
+    mediaEls.start.volume = 0
+  
+    mediaEls.win.src = win
+    mediaEls.win.volume = 0
+  
+    mediaEls.lose.src = lose
+    mediaEls.lose.volume = 0
+  }
 
   function initMusicAndButton() {
 
@@ -38,94 +70,96 @@ export const audio = function() {
       if (!isMusicStarted && !isMusicPlaying) {
       isMusicStarted = true
       isMusicPlaying = true
-      effectEl.volume = 0.35
-      winLoseEl.volume = 0.6
-      menuSoundEl.volume = 0.5
-      // soundBtnEl.textContent = '🔊'
+
       soundBtnImageEl.src = soundOn
-      musicEl.play()
+      volumeMixer.music = 0.8
+      volumeMixer.sfx = 0.65
+
+      mediaEls.music.play()
+
       } else if (isMusicStarted && isMusicPlaying) {
         isMusicPlaying = false
-        // soundBtnEl.textContent = '🔇'
+
         soundBtnImageEl.src = soundOff
-        musicEl.volume = 0
-        effectEl.volume = 0
-        menuSoundEl.volume = 0
-        winLoseEl.volume = 0
-      } else if (isMusicStarted && !isMusicPlaying) {
+        volumeMixer.music = 0
+        volumeMixer.sfx = 0
+
+      } else if (isMusicStarted && !isMusicPlaying) { //
         isMusicPlaying = true
-        // soundBtnEl.textContent = '🔊'
+
         soundBtnImageEl.src = soundOn
-        musicEl.volume = 0.8
-        effectEl.volume = 0.35
-        menuSoundEl.volume = 0.5
-        winLoseEl.volume = 0.6
+        volumeMixer.music = 0.8
+        volumeMixer.sfx = 0.65
       }
+
+      setVolumes(volumeMixer.music, volumeMixer.sfx)      
     })
   }
 
   function playPositive() {
-    effectEl.src = positive
-    effectEl.play()
+    volumeMixer.sfx > 0 ? mediaEls.positive.play() : null
   }
-
+  
   function playNegative() {
-    effectEl.src = negative
-    effectEl.play()
+    volumeMixer.sfx > 0 ? mediaEls.negative.play() : null
   }
-
+  
   function playHover() {
-    menuSoundEl.src = hover
-    if (effectEl.volume !== 0.0) {
-    menuSoundEl.play() }
+    volumeMixer.sfx > 0 ? mediaEls.hover.play() : null
   }
-
+  
   function playClick() {
-    menuSoundEl.src = click
-    if (effectEl.volume !== 0.0) {
-      menuSoundEl.play() }
+    volumeMixer.sfx > 0 ? mediaEls.click.play() : null
   }
-
+  
   function playStart() {
-    menuSoundEl.src = start
-    if (effectEl.volume !== 0.0) {
-      menuSoundEl.play() }
+    volumeMixer.sfx > 0 ? mediaEls.start.play() : null
   }
 
   function playEnd(winner) {
-    if (winLoseEl.volume != 0) {
-      if (winner === "player") {
-        winLoseEl.src = win
-      } else if (winner === "ai"){
-        winLoseEl.src = lose
-      }
+    if (isMusicPlaying) { //if music playing, mute temporarily
+      mediaEls.music.volume = 0.2
+    } 
 
-      winLoseEl.volume = 0.6
-      winLoseEl.play()
-
-      if (isMusicPlaying) { //if music playing, mute temporarily
-        musicEl.volume = 0.05
-      } 
+    if (volumeMixer.sfx > 0) {
+      winner === "player" ? mediaEls.win.play() : mediaEls.lose.play()
 
       setTimeout(() => {
-        const targetVolume = 0.8
+        const targetVolume = 0.8 // starting volume
         const duration = 3000
-        const increment = 0.1
+        const increment = 0.05 //will this make it more gradual over the same amount of time?
         const intervalTime = duration / (targetVolume / increment)
     
-        let currentVolume = musicEl.volume
+        let currentMusicVolume = mediaEls.music.volume
+
+        if (currentMusicVolume >= targetVolume) { //if no change necessary
+          mediaEls.music.volume = targetVolume
+          return
+        }
     
         const volumeInterval = setInterval(() => {
-          if (currentVolume >= targetVolume) {
+          if (currentMusicVolume >= targetVolume) {
             clearInterval(volumeInterval)
           } else {
-            currentVolume = Math.min(currentVolume + increment, targetVolume)
-            musicEl.volume = currentVolume
+            currentMusicVolume = Math.min(currentMusicVolume + increment, targetVolume)
+            mediaEls.music.volume = currentMusicVolume
           }
         }, intervalTime)
       }, 3000)
 
     }
+  }
+
+  function setVolumes(musicVolume, sfxVolume) {
+    mediaEls.music.volume = musicVolume
+
+    mediaEls.click.volume = sfxVolume
+    mediaEls.hover.volume = sfxVolume
+    mediaEls.positive.volume = sfxVolume
+    mediaEls.negative.volume = sfxVolume
+    mediaEls.start.volume = sfxVolume
+    mediaEls.win.volume = sfxVolume
+    mediaEls.lose.volume = sfxVolume
   }
 
   return {
