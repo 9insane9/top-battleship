@@ -179,6 +179,7 @@ function fireAroundShipIfSunk(gridEl, board, pos) {
   }
 }
 
+//Calculation problem, currently doesnt account of valid adjacent is on previous or next row
 function getSunkShipNewAdjacents(board, pos) {
   console.log("Checking if adjacents needed...")
   const alreadyShot = board.shotsReceived
