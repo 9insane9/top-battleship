@@ -119,6 +119,7 @@ function updateDisplay(pos) {
   //on hit for player
   if (aiShipInFleet) {
     sound.playPositive()
+    render.shootAnimation(aiGridEl, pos, "player")
     render.startFireAnimation(aiGridEl, pos)
     render.markHitAndRenderShipAnimation(aiGridEl, pos, aiShipInFleet, gameRound)
 
@@ -127,6 +128,7 @@ function updateDisplay(pos) {
 
   } else { //on miss for player
     sound.playNegative()
+    render.shootAnimation(aiGridEl, pos, "player")
     render.splashAnimation(aiGridEl, pos)
     setTimeout(() => { render.markMissedShotAnimation(aiGridEl, pos) }, 1000)
     
@@ -135,14 +137,16 @@ function updateDisplay(pos) {
   setTimeout(() => {
 
     if (playerShipInFleet) { //ai on hit
+      render.shootAnimation(playerGridEl, aiHitPos, "ai")
       render.startFireAnimation(playerGridEl, aiHitPos)
       fireAroundShipIfSunk(playerGridEl, gameRound.boards.player, aiHitPos)
     } else { //ai on miss
+      render.shootAnimation(playerGridEl, aiHitPos, "ai")
       render.splashAnimation(playerGridEl, aiHitPos)
 
       setTimeout(() => { 
         render.markMissedShotAnimation(playerGridEl, aiHitPos)
-      }, 1000)
+      }, 1500)
       
     }
   }, 1000)

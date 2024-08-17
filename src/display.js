@@ -14,6 +14,9 @@ import miss2 from './images/finalCross2.png'
 import splash1 from './images/splash1.png'
 import splash2 from './images/splash2.png'
 import splash3 from './images/splash3.png'
+import playerShoot1and3 from './images/playerShoot1-3.png'
+import aiShoot1and3 from './images/aiShoot1-3.png'
+import shoot2 from './images/shoot2.png'
 
 import playerIndicator1 from './images/indicators/pi1.png'
 import playerIndicator2 from './images/indicators/pi2.png'
@@ -30,6 +33,8 @@ import aiIndicator4 from './images/indicators/aii4.png'
   const hitFrames = [mark1, mark2]
   const missFrames = [miss1, miss2]
   const splashFrames = [splash1, splash2, splash3]
+  const playerShootFrames = [playerShoot1and3, shoot2, playerShoot1and3]
+  const aiShootFrames = [aiShoot1and3, shoot2, aiShoot1and3]
 
   function generateGrids() {
     const playerGridContainer = document.querySelector(".player-grid")
@@ -277,6 +282,20 @@ import aiIndicator4 from './images/indicators/aii4.png'
     })
   }
 
+  function shootAnimation(gridEl, pos, playerID) {
+    let frames
+
+    playerID === "player" ? frames = playerShootFrames : frames = aiShootFrames
+
+    const cells = Array.from(gridEl.children)
+
+    cells.forEach((cell) => {
+      if (cell.getAttribute("data-index") == pos) {
+        startAnimation(cell, frames, false, 125, "no-class", 2000)
+      }
+    })
+  }
+
   //animation helpers
 
   //water
@@ -412,6 +431,7 @@ import aiIndicator4 from './images/indicators/aii4.png'
     updateIndicators,
     startWaterAnimation,
     renderFleet,
+    shootAnimation,
     startFireAnimation,
     splashAnimation, 
     markHitAndRenderShipAnimation, 
