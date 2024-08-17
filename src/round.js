@@ -19,7 +19,7 @@ const round = function (randomLayoutFn = genRandomLayout) {
       if (gameStarted) throw new Error('Play with what is already on the board!')
       board.initializeBoard()
       randomLayoutFn(board)
-      console.log(`Board generated for ${board}!`)
+      console.log(`Board generated!`)
       return board
     }
 
@@ -126,7 +126,6 @@ function randomAiAttackPosFn() {
     } while (playerBoard.shotsReceived.includes(aiAttackPos))
 
     playerBoard.receiveAttack(aiAttackPos)
-    console.log(playerBoard.shotsReceived)
     console.log(`RandomAi attack performed at ${aiAttackPos}`)
 
     return aiAttackPos

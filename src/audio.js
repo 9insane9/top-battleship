@@ -75,56 +75,54 @@ export const audio = function() {
     menuSoundEl.src = hover
     if (effectEl.volume !== 0.0) {
     menuSoundEl.play() }
-    console.log("Hover!")
   }
 
   function playClick() {
     menuSoundEl.src = click
     if (effectEl.volume !== 0.0) {
       menuSoundEl.play() }
-    console.log("Click!")
   }
 
   function playStart() {
     menuSoundEl.src = start
     if (effectEl.volume !== 0.0) {
       menuSoundEl.play() }
-    console.log("Start pressed!")
   }
 
   function playEnd(winner) {
-    if (winner === "player") {
-      winLoseEl.src = win
-    } else if (winner === "ai"){
-      winLoseEl.src = lose
+    if (winLoseEl.volume != 0) {
+      if (winner === "player") {
+        winLoseEl.src = win
+      } else if (winner === "ai"){
+        winLoseEl.src = lose
+      }
+
+      winLoseEl.volume = 0.6
+      winLoseEl.play()
+
+      if (isMusicPlaying) { //if music playing, mute temporarily
+        musicEl.volume = 0.05
+      } 
+
+      setTimeout(() => {
+        const targetVolume = 0.8
+        const duration = 3000
+        const increment = 0.1
+        const intervalTime = duration / (targetVolume / increment)
+    
+        let currentVolume = musicEl.volume
+    
+        const volumeInterval = setInterval(() => {
+          if (currentVolume >= targetVolume) {
+            clearInterval(volumeInterval)
+          } else {
+            currentVolume = Math.min(currentVolume + increment, targetVolume)
+            musicEl.volume = currentVolume
+          }
+        }, intervalTime)
+      }, 3000)
+
     }
-
-    winLoseEl.volume = 0.6
-    winLoseEl.play()
-
-    if (isMusicPlaying) { //if music playing, mute temporarily
-      musicEl.volume = 0.05
-    } 
-
-    setTimeout(() => {
-      const targetVolume = 0.8
-      const duration = 3000
-      const increment = 0.1
-      const intervalTime = duration / (targetVolume / increment)
-  
-      let currentVolume = musicEl.volume
-  
-      const volumeInterval = setInterval(() => {
-        if (currentVolume >= targetVolume) {
-          clearInterval(volumeInterval)
-        } else {
-          currentVolume = Math.min(currentVolume + increment, targetVolume)
-          musicEl.volume = currentVolume
-        }
-      }, intervalTime)
-    }, 3000)
-
-
   }
 
   return {

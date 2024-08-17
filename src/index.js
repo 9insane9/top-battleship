@@ -11,15 +11,15 @@ const gameRound = round()
 const playerGridEl = document.querySelector('.player-grid')
 const aiGridEl = document.querySelector('.ai-grid')
 
-render.startWaterAnimation(playerGridEl, aiGridEl) //startWaterEffect
-
 document.addEventListener("DOMContentLoaded", () => {
   render.generateGrids()
+  render.startWaterAnimation(playerGridEl, aiGridEl)
   render.renderFleet(playerGridEl, gameRound.boards.player)
-  initEvents(gameRound)
-  render.generateIndicators() //indicators
+  render.generateIndicators()
   render.updateIndicators(gameRound)
   sound.initMusicAndButton()
+
+  initEvents(gameRound)
 })
 
 function initEvents(gameRound) {
@@ -43,14 +43,10 @@ function initEvents(gameRound) {
     backToMenuEvent()
   })
 
-  const allButtonEls = [ boardBtn, startBtn]
-  console.log(allButtonEls)
-
-  allButtonEls.forEach((buttonEl) => {
-    buttonEl.addEventListener('mouseenter', () => {
+  const menuButtonEls = [ boardBtn, startBtn]
+  menuButtonEls.forEach((buttonEl) => { buttonEl.addEventListener('mouseenter', () => {
       sound.playHover()
-    })
-  })
+    })})
 }
 
 function start() {
@@ -69,36 +65,31 @@ function start() {
 
 function fireShotEvent(event) {
   const indexString = event.target.getAttribute('data-index')
-  console.log(`position as string is: ${indexString}`)
   const pos = Number(indexString)
-  console.log(`position as number is: ${pos}`)
 
-  console.log(`Position from player click is: ${pos}`)
+  console.log(`Player attempts to fire at: ${pos}`)
   const aiShotsReceived = gameRound.boards.ai.shotsReceived
   const isNewPosition = !aiShotsReceived.includes(pos)
 
-  console.log(aiShotsReceived)
-  console.log(isNewPosition)
-
+  console.log(`All shots received by AI: ${aiShotsReceived}`)
+ 
   if (isNewPosition) {
-    console.log('Firing shot!')
+    console.log(`Firing shot at: ${pos}`)
 
     gameRound.playTurn(pos) 
 
     updateDisplay(pos)
     render.updateIndicators(gameRound)
+  }
 
-    let gameOver = gameRound.getGameOver()
+  let gameOver = gameRound.getGameOver()
+  if (gameOver) {
+    aiGridEl.removeEventListener('click', fireShotEvent)
+    Array.from(aiGridEl.children).forEach((aiCell) => { aiCell.classList.remove('can-aim') })
 
-    if (gameOver) {
-      aiGridEl.removeEventListener('click', fireShotEvent)
-      Array.from(aiGridEl.children).forEach((aiCell) => { aiCell.classList.remove('can-aim') })
-
-      let winner = gameRound.checkIfWin()
-      render.showGameOver(winner)
-      sound.playEnd(winner)
-      
-    }
+    let winner = gameRound.checkIfWin()
+    render.showGameOver(winner)
+    sound.playEnd(winner)      
   }
 }
 
@@ -130,6 +121,10 @@ function updateDisplay(pos) {
     sound.playPositive()
     render.startFireAnimation(aiGridEl, pos)
     render.markHitAndRenderShipAnimation(aiGridEl, pos, aiShipInFleet, gameRound)
+
+    //fire around sunk ships here
+    fireAroundShipIfSunk(aiGridEl, gameRound.boards.ai, pos)
+
   } else { //on miss for player
     sound.playNegative()
     render.splashAnimation(aiGridEl, pos)
@@ -141,19 +136,85 @@ function updateDisplay(pos) {
 
     if (playerShipInFleet) { //ai on hit
       render.startFireAnimation(playerGridEl, aiHitPos)
+      fireAroundShipIfSunk(playerGridEl, gameRound.boards.player, aiHitPos)
     } else { //ai on miss
       render.splashAnimation(playerGridEl, aiHitPos)
 
-      setTimeout(() => { render.markMissedShotAnimation(playerGridEl, aiHitPos) }, 1000)
+      setTimeout(() => { 
+        render.markMissedShotAnimation(playerGridEl, aiHitPos)
+      }, 1000)
       
     }
   }, 1000)
 }
 
 function resetGame(gameRound) {
-  render.clearDisplay(playerGridEl, aiGridEl)
   gameRound.playAgain()
+
+  render.clearDisplay(playerGridEl, aiGridEl)
   render.renderFleet(playerGridEl, gameRound.boards.player)
   render.updateIndicators(gameRound)
+}
 
+//hep
+function fireAroundShipIfSunk(gridEl, board, pos) {
+  const targetsArr = getSunkShipNewAdjacents(board, pos)
+
+  if (targetsArr.length > 0) {
+    targetsArr.forEach((target) => {
+      render.splashAnimation(gridEl, target.toString())
+    })
+
+    setTimeout(() => { 
+      targetsArr.forEach((target) => {
+        render.markMissedShotAnimation(gridEl, target.toString())
+      }) 
+    }, 1000)
+
+    board.shotsReceived.push(...targetsArr) //not here maybe, game state thing
+  }
+}
+
+function getSunkShipNewAdjacents(board, pos) {
+  console.log("Checking if adjacents needed...")
+  const alreadyShot = board.shotsReceived
+  const allPotentialCoordinates = []
+  let shipCoordinates = []
+  const shipID = board.boardState[pos]
+  console.log(`Ship is: ${shipID}`)
+
+  if (shipID) {
+    const ship = board.fleet[shipID]
+    
+    if (ship.status.isSunk) { 
+      shipCoordinates = ship.status.position 
+    }
+  }
+  
+  if (shipCoordinates.length > 0) {
+    shipCoordinates.forEach((coordinate) => {
+      allPotentialCoordinates.push(coordinate - 11)
+      allPotentialCoordinates.push(coordinate - 10)
+      allPotentialCoordinates.push(coordinate - 9)
+      allPotentialCoordinates.push(coordinate - 1)
+      allPotentialCoordinates.push(coordinate + 1)
+      allPotentialCoordinates.push(coordinate + 9)
+      allPotentialCoordinates.push(coordinate + 10)
+      allPotentialCoordinates.push(coordinate + 11)
+    })
+
+    const inBoundsCoordinates = allPotentialCoordinates.filter(coordinate =>
+      coordinate >= 0 && coordinate <= 99
+    )
+    console.log(inBoundsCoordinates)
+
+    const newAdjacentCoordinates = inBoundsCoordinates.filter(coordinate =>
+      !alreadyShot.includes(coordinate)
+    )
+
+      console.log(`new sunk adjacents: ${newAdjacentCoordinates}`)
+    return newAdjacentCoordinates
+  }
+
+  return []
 }

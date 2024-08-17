@@ -69,22 +69,7 @@ import aiIndicator4 from './images/indicators/aii4.png'
       aiShip4: createImage(aiIndicator4)
     }
 
-
-    function createTextElement(text, className) {
-      const p = document.createElement('p');
-      p.textContent = 0;
-      p.className = className;
-      return p;
-    }
-
-    function createSpacer() {
-      const p = document.createElement('p');
-      p.textContent = '|';
-      p.className = 'spacer';
-      return p;
-    }
-
-    function appendAndStyleIndicators(indicators, container, baseClassName) {
+    function addIndicators(indicators, container, baseClassName) {
       Object.entries(indicators).forEach(([key, image], index, array) => {
         image.className = "ship-icon"
         container.appendChild(image);
@@ -106,96 +91,26 @@ import aiIndicator4 from './images/indicators/aii4.png'
       })
     }
 
-    ///
-    appendAndStyleIndicators(playerIndicators, playerShipInfoEl, 'player');
-    appendAndStyleIndicators(aiIndicators, aiShipInfoEl, 'ai');
-  }
-
-  function startWaterAnimation(grid1, grid2) {
-    generateWater(grid1, grid2)
-    setInterval(() => {
-      swapFrame(grid1, grid2)
-    }, 1000)
-  }
-
-  function generateWater(...grids) {
-
-    grids.forEach((grid) => {
-      const children = Array.from(grid.children)
-              .filter(child => child.classList.contains('cell'))
-
-      children.forEach((child, index) => {
-        const rowIndex = Math.floor(index / 10)
-
-        if (rowIndex % 2 === 0) { //even rows
-          child.style.backgroundImage = `url('${wave1}')`
-        } else { // odd rows
-          child.style.backgroundImage = `url('${wave2}')`
-        }
-
-        child.style.overflow = "hidden"
-        child.style.backgroundSize = "cover"
-        child.style.backgroundRepeat = "no-repeat"
-      })
-    })
-  }
-
-  let isFirstFrame = true //track alignment
-
-  function swapFrame(...grids) {
-    grids.forEach((grid) => {
-      const children = Array.from(grid.children)
-              .filter(child => child.classList.contains('cell'))
-              
-      children.forEach((child, index) => {
-        const rowIndex = Math.floor(index / 10)
-
-        //re-align based on state
-        if (rowIndex % 2 === 0) {
-          child.style.background = isFirstFrame
-            ? `url('${wave2}')`
-            : `url('${wave1}')`
-        } else {
-          child.style.background = isFirstFrame
-            ? `url('${wave1}')`
-            : `url('${wave2}')`
-        }
-
-        child.style.overflow = "hidden"
-        child.style.backgroundSize = "cover"
-        child.style.backgroundRepeat = "no-repeat"
-      })
-    })
-
-    isFirstFrame = !isFirstFrame
-  }  
-
-
-  function createImage(src, axis = null, isStart = false, isLast = false) {
-    const img = document.createElement('img')
-    img.style.pointerEvents = "none"
-    img.src = src
-    img.style.width = '100%'
-    img.style.height = '100%'
-    img.style.zIndex = '5'
-    
-    if (axis) {
-      if (axis === 'x') {
-        img.style.transform = isLast ? 'rotate(90deg) scaleX(-1)' : 'rotate(90deg)'
-        img.style.transformOrigin = 'center'
-        if (isStart) {
-          img.style.transform = 'rotate(-90deg) scaleX(-1)'
-        }
-      } else if (axis === 'y') {
-        img.style.transform = isLast ? 'scaleY(-1)' : ''
-        img.style.transformOrigin = 'center'
-      }
+    function createTextElement(text, className) {
+      const p = document.createElement('p');
+      p.textContent = 0;
+      p.className = className;
+      return p;
     }
-    return img
+
+    function createSpacer() {
+      const p = document.createElement('p');
+      p.textContent = '|';
+      p.className = 'spacer';
+      return p;
+    }
+
+    addIndicators(playerIndicators, playerShipInfoEl, 'player');
+    addIndicators(aiIndicators, aiShipInfoEl, 'ai');
   }
 
   function renderShip(gridEl, coordinates, ship) {
-    console.log(`Rendering ship at ${coordinates}`)
+    console.log(`Rendering ship at ${coordinates}!`)
     const length = ship.status.length
 
     coordinates.forEach((coord, index) => {
@@ -234,22 +149,12 @@ import aiIndicator4 from './images/indicators/aii4.png'
     Object.keys(board.fleet).forEach(shipID => {
       const ship = board.fleet[shipID]
       const coordinates = ship.status.position
-      console.log(`${coordinates}`)
+
       if (coordinates && coordinates.length > 0) {
         renderShip(gridEl, coordinates, ship)
       }
     })
-    console.log('Fleet rendered!')
   }
-
-  // function clearDisplay(...gridEls) {
-  //   gridEls.forEach(gridEl => {
-  //     const imgElements = gridEl.querySelectorAll('img')
-  //             // .filter(child => !child.classList.contains('ship-icon'))
-      
-  //     imgElements.forEach(img => img.remove())
-  //   })
-  // }
 
   function clearDisplay(...gridEls) {
     gridEls.forEach(gridEl => {
@@ -279,8 +184,6 @@ import aiIndicator4 from './images/indicators/aii4.png'
     const playerShipsLeft = gameRound.boards.player.countShipsLeft()
     const aiShipsLeft = gameRound.boards.ai.countShipsLeft()
 
-    console.log(aiShipsLeft)
-
     playerIndicatorStates.ships1.textContent = playerShipsLeft.ships1;
     playerIndicatorStates.ships2.textContent = playerShipsLeft.ships2;
     playerIndicatorStates.ships3.textContent = playerShipsLeft.ships3;
@@ -292,13 +195,40 @@ import aiIndicator4 from './images/indicators/aii4.png'
     aiIndicatorStates.ships3.textContent = aiShipsLeft.ships3;
     aiIndicatorStates.ships4.textContent = aiShipsLeft.ships4;
 
-    console.log("updated!")
+    console.log("Indicators updated!")
   }
 
-  
-
   //animations
+  function startWaterAnimation(grid1, grid2) {
+    generateWater(grid1, grid2)
+    setInterval(() => {
+      swapFrame(grid1, grid2)
+    }, 1000)
+  }
 
+  function generateWater(...grids) {
+
+    grids.forEach((grid) => {
+      const children = Array.from(grid.children)
+              .filter(child => child.classList.contains('cell'))
+
+      children.forEach((child, index) => {
+        const rowIndex = Math.floor(index / 10)
+
+        if (rowIndex % 2 === 0) { //even rows
+          child.style.backgroundImage = `url('${wave1}')`
+        } else { // odd rows
+          child.style.backgroundImage = `url('${wave2}')`
+        }
+
+        child.style.overflow = "hidden"
+        child.style.backgroundSize = "cover"
+        child.style.backgroundRepeat = "no-repeat"
+      })
+    })
+  }
+
+  //
   function startFireAnimation(gridEl, pos) {
     const cells = Array.from(gridEl.children)
 
@@ -347,6 +277,39 @@ import aiIndicator4 from './images/indicators/aii4.png'
     })
   }
 
+  //animation helpers
+
+  //water
+  let isFirstWaterFrame = true
+
+  function swapFrame(...grids) {
+    grids.forEach((grid) => {
+      const children = Array.from(grid.children)
+              .filter(child => child.classList.contains('cell'))
+              
+      children.forEach((child, index) => {
+        const rowIndex = Math.floor(index / 10)
+
+        //re-align based on state
+        if (rowIndex % 2 === 0) {
+          child.style.background = isFirstWaterFrame
+            ? `url('${wave2}')`
+            : `url('${wave1}')`
+        } else {
+          child.style.background = isFirstWaterFrame
+            ? `url('${wave1}')`
+            : `url('${wave2}')`
+        }
+
+        child.style.overflow = "hidden"
+        child.style.backgroundSize = "cover"
+        child.style.backgroundRepeat = "no-repeat"
+      })
+    })
+
+    isFirstWaterFrame = !isFirstWaterFrame
+  }
+
   function startAnimation(parentEl, framesArr, isLoop, interval, className = "no-class", zIndex = '6') {
     const imgEl = document.createElement("img")
     imgEl.style.pointerEvents = "none"
@@ -392,6 +355,7 @@ import aiIndicator4 from './images/indicators/aii4.png'
     }
   }
 
+  //game-start-end
   function showGameStart() {
     const gameStartTextEl = document.querySelector('.game-start-text')
 
@@ -416,6 +380,30 @@ import aiIndicator4 from './images/indicators/aii4.png'
       gameOverTextEl.style.color = "rgb(0, 255, 85)"
       gameOverTextEl.textContent = "You have won!" 
     }
+  }
+
+  //big shout
+  function createImage(src, axis = null, isStart = false, isLast = false) {
+    const img = document.createElement('img')
+    img.style.pointerEvents = "none"
+    img.src = src
+    img.style.width = '100%'
+    img.style.height = '100%'
+    img.style.zIndex = '5'
+    
+    if (axis) {
+      if (axis === 'x') {
+        img.style.transform = isLast ? 'rotate(90deg) scaleX(-1)' : 'rotate(90deg)'
+        img.style.transformOrigin = 'center'
+        if (isStart) {
+          img.style.transform = 'rotate(-90deg) scaleX(-1)'
+        }
+      } else if (axis === 'y') {
+        img.style.transform = isLast ? 'scaleY(-1)' : ''
+        img.style.transformOrigin = 'center'
+      }
+    }
+    return img
   }
 
   return {

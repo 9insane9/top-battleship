@@ -127,7 +127,7 @@ const Gameboard = function() {
           allShipsSunk }
 }
 
-const placement = (function(boardState) {
+const placement = (function() {
   const rows = []
   const columns = []
   

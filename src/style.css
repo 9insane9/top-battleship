@@ -129,6 +129,7 @@ body, html {
     text-shadow: 4px 2px 2px rgba(0, 0, 0, 1.0);
     box-sizing: border-box;
     border: 5px solid #ff0460ad;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
     background: rgb(3, 52, 110, 0.3);
 }
 
@@ -161,6 +162,7 @@ body, html {
     text-shadow: 4px 2px 2px rgba(0, 0, 0, 1.0);
     box-sizing: border-box;
     border: 5px solid #EB3678;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
     background: rgb(3, 52, 110, 0.3);
 }
 
@@ -217,6 +219,7 @@ body, html {
 /* cell hover only while in game */
 .can-aim:hover { 
     border: 3px solid goldenrod;
+    cursor: pointer;
 }
 
 /* stelth */
@@ -251,21 +254,26 @@ body, html {
 
 
 .ship-info {
-    /* border: 2px solid rgb(234, 0, 255); */
     display: flex;
     width: 20vw;
     flex-grow: 1;
-    justify-content: space-between; /* Distribute items evenly with space around them */
+    justify-content: space-between;
     align-items: center;
 }
 
 .ship-text {
     margin-right: 10px;
-    /* margin-top: 25px; */
 }
 
+.player-ship-info > .ship-text {
+    text-shadow: 1px 1px 1px rgba(255, 183, 0, 0.658);
+} 
+
+.ai-ship-info > .ship-text {
+    text-shadow: 1px 1px 1px #eb36789d;
+} 
+
 .ship-spacer {
-    /* margin-top: 25px; */
     color: aqua;
 }
 
