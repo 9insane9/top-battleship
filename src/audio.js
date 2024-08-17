@@ -1,4 +1,4 @@
-import music from './audio/battleship56-2.mp3' //first game soundtrack, yay
+import music from './audio/battleship-theme.mp3' //first game soundtrack, yay
 import positive from './audio/positive.mp3'
 import negative from './audio/negative.mp3'
 import hover from './audio/hover.mp3'
