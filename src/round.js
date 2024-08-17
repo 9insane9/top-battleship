@@ -1,6 +1,6 @@
 const Gameboard = require('./gameboard')
 const genRandomLayout = require('./random')
-const ai = require('./ai')
+// const ai = require('./ai')
 
 const round = function (randomLayoutFn = genRandomLayout) {
   const boards = {
@@ -8,10 +8,10 @@ const round = function (randomLayoutFn = genRandomLayout) {
     ai: new Gameboard(),
   }
 
-  let aiFn = randomAiAttackPosFn() //set default difficulty
-  let difficulty = "random"
+  let aiFn = aiAttackFn()
   let gameStarted = false
   let gameOver = false
+  let difficultyValue = 0 //lower is easier
 
   const menu = function() {
 
@@ -25,15 +25,23 @@ const round = function (randomLayoutFn = genRandomLayout) {
 
     function toggleDifficulty() {
       if (gameStarted) throw new Error('Cannot change difficulty mid game!')
-      difficulty === "random" ? difficulty = "ai" : difficulty = "random"
-      difficulty === "random" ? aiFn = ai() : aiFn = randomAiAttackPosFn()
-      console.log(`difficulty set to ${difficulty}`)
+
+      if (difficultyValue === 0) {
+        difficultyValue = 0.3
+
+      } else if (difficultyValue === 0.3) {
+        difficultyValue = 0.95
+
+      } else if (difficultyValue === 0.95) {
+        difficultyValue = 0
+      }
+      console.log(`difficulty set to ${difficultyValue}`)
     }
 
     function startGame() {
       if (gameStarted) throw new Error('Game already started!')
       gameStarted = true
-    console.log(`Game started!`)
+      console.log(`Game started!`)
     }
 
     return {
@@ -53,7 +61,7 @@ const round = function (randomLayoutFn = genRandomLayout) {
     checkIfWin()
 
     if (!gameOver) {
-      aiFn.attack(boards.player)
+      aiFn.attack(boards.player, difficultyValue)
       checkIfWin()
     }
   }
@@ -117,17 +125,28 @@ const round = function (randomLayoutFn = genRandomLayout) {
 
 
 //ai turn
-function randomAiAttackPosFn() {
+function aiAttackFn() { 
 
-  function attack(playerBoard) {
+  function attack(playerBoard, difficultyValue) {
     let aiAttackPos
-    do {
-      aiAttackPos = Math.floor(Math.random() * 100)
-    } while (playerBoard.shotsReceived.includes(aiAttackPos))
+
+    const validCheatPositions = playerBoard.getAllStillOpenShipPositions()
+    const valueToBeat = 0.99 - difficultyValue
+    const diceResult = Math.random()
+
+    if (diceResult > valueToBeat && validCheatPositions.length > 0) { //if cheating
+      aiAttackPos = validCheatPositions[Math.floor(Math.random() * validCheatPositions.length)]
+      console.log(`cheatingAi attacking at ${aiAttackPos}`)
+    } else { //if not cheating
+
+      do {
+        aiAttackPos = Math.floor(Math.random() * 100)
+      } while (playerBoard.shotsReceived.includes(aiAttackPos))
+
+      console.log(`randomAi attacking at ${aiAttackPos}`)
+    }
 
     playerBoard.receiveAttack(aiAttackPos)
-    console.log(`RandomAi attack performed at ${aiAttackPos}`)
-
     return aiAttackPos
   }
 
@@ -137,6 +156,5 @@ function randomAiAttackPosFn() {
   
   return { attack, getState }
 }
-/////////
 
 module.exports = round

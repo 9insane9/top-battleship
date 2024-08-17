@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initEvents(gameRound) {
   const boardBtn = document.querySelector('.generate-board-btn')
+  const difficultyBtn = document.querySelector('.toggle-difficulty')
   const startBtn = document.querySelector('.start-game-btn')
   const backToMenuBtn = document.querySelector('.back-to-menu-btn')
 
@@ -43,7 +44,11 @@ function initEvents(gameRound) {
     backToMenuEvent()
   })
 
-  const menuButtonEls = [ boardBtn, startBtn]
+  difficultyBtn.addEventListener('click', () => {
+    toggleDifficultyEvent()
+  })
+
+  const menuButtonEls = [ boardBtn, startBtn, difficultyBtn] //add hover sound
   menuButtonEls.forEach((buttonEl) => { buttonEl.addEventListener('mouseenter', () => {
       sound.playHover()
     })})
@@ -103,6 +108,12 @@ function backToMenuEvent() {
   menuEl.classList.remove('invisible')
 
   resetGame(gameRound)
+}
+
+function toggleDifficultyEvent() {
+  sound.playClick()
+  render.toggleDifficultyDisplay()
+  gameRound.menu().toggleDifficulty()
 }
 
 function updateDisplay(pos) {

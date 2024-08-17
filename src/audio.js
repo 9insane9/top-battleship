@@ -11,6 +11,7 @@ import soundOff from './images/soundOff.svg'
 import soundOn from './images/soundOn.svg'
 
 export const audio = function() {
+
   const soundBtnEl = document.querySelector('.sound-btn')
   const soundBtnImageEl = document.querySelector('.sound-btn-image')
   soundBtnImageEl.src = soundOff

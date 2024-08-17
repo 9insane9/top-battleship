@@ -172,19 +172,38 @@ body, html {
     width: 100%;
     font-family: "Pixelify Sans", sans-serif;
     font-size: 30px;
-    color: white;
     text-shadow: 4px 2px 2px rgba(0, 0, 0, 1.0);
     box-sizing: border-box;
     border: 5px solid #EB3678;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
     background: rgb(3, 52, 110, 0.3);
 }
 
+.menu > .generate-board-btn,
+.menu > .start-game-btn {
+    color: white;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
 .menu button:hover {
-    color: rgb(255, 255, 255);
-    background: rgba(175, 172, 0, 0.);
+    background: rgb(3, 52, 110, 0.4);
     cursor: pointer;
     transform: scale(1.05);
+}
+
+/* difficulty specific styles */
+.easy {
+    color: aqua;
+    box-shadow: 2px 2px 2px rgb(0, 255, 255, 0.75);
+}
+
+.normal {
+    color: rgb(255, 183, 0);
+    box-shadow: 2px 2px 2px rgba(255, 183, 0, 0.75);
+}
+
+.impossible {
+    color: red;
+    box-shadow: 2px 2px 2px rgb(255, 0, 0, 0.8);
 }
 
 /* GRIDS */

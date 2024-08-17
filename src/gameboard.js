@@ -117,6 +117,20 @@ const Gameboard = function() {
 
   }
 
+  function getAllStillOpenShipPositions() {
+    const allShipPositions = []
+  
+    Object.values(this.fleet).forEach(ship => {
+      const validPositions = ship.status.position.filter(position => 
+        !this.shotsReceived.includes(position)
+      )
+      allShipPositions.push(...validPositions)
+    })
+
+    console.log(`Valid positions for cheating: ${allShipPositions}`)
+    return allShipPositions
+  }
+
   return { boardState, 
           shotsReceived, 
           fleet, 
@@ -124,7 +138,8 @@ const Gameboard = function() {
           initializeBoard, 
           receiveAttack,
           countShipsLeft, 
-          allShipsSunk }
+          allShipsSunk,
+          getAllStillOpenShipPositions }
 }
 
 const placement = (function() {

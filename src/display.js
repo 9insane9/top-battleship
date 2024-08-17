@@ -36,6 +36,22 @@ import aiIndicator4 from './images/indicators/aii4.png'
   const playerShootFrames = [playerShoot1and3, shoot2, playerShoot1and3]
   const aiShootFrames = [aiShoot1and3, shoot2, aiShoot1and3]
 
+  function toggleDifficultyDisplay() {
+    const difficultyBtn = document.querySelector('.toggle-difficulty')
+    const classList = difficultyBtn.classList
+
+    if (classList.contains('easy')) {
+      difficultyBtn.className = 'toggle-difficulty normal'
+      difficultyBtn.textContent = "Normal"
+    } else if (classList.contains('normal')) {
+      difficultyBtn.className = 'toggle-difficulty impossible'
+      difficultyBtn.textContent = "Impossible"
+    } else {
+      difficultyBtn.className = 'toggle-difficulty easy'
+      difficultyBtn.textContent = "Easy"
+    }
+  }
+
   function generateGrids() {
     const playerGridContainer = document.querySelector(".player-grid")
     const aiGridContainer = document.querySelector(".ai-grid")
@@ -119,35 +135,35 @@ import aiIndicator4 from './images/indicators/aii4.png'
     const length = ship.status.length
 
     coordinates.forEach((coord, index) => {
-      const allCells = Array.from(gridEl.children)
-              .filter(child => child.classList.contains('cell'))
+      const allGridChildren = Array.from(gridEl.children)
+      const cells = allGridChildren.filter(child => child.classList.contains('cell'))
 
-      const cell = allCells[coord]
+      const targetCell = cells[coord]
 
-      const shipMarkElement = cell.querySelector(".ship-mark")
+      const shipMarkElement = targetCell.querySelector(".ship-mark")
       if (shipMarkElement) { shipMarkElement.remove() }
 
       if (length === 1) {
-        cell.appendChild(createImage(destroyer, ship.status.axis))
+        targetCell.appendChild(createImage(destroyer, ship.status.axis))
       } else {
 
         if (index === 0) { //start
-          cell.appendChild(createImage(shipEnd, ship.status.axis, true, false))
+          targetCell.appendChild(createImage(shipEnd, ship.status.axis, true, false))
         } else if (index === coordinates.length - 1) { //end
-          cell.appendChild(createImage(shipEnd, ship.status.axis, false, true))
+          targetCell.appendChild(createImage(shipEnd, ship.status.axis, false, true))
         } else { //middle
-          cell.appendChild(createImage(shipMiddle, ship.status.axis))
+          targetCell.appendChild(createImage(shipMiddle, ship.status.axis))
         }
       }
     })
   }
 
   function renderFleet(gridEl, board) {
+    const allGridChildren = Array.from(gridEl.children)
+    const cells = allGridChildren.filter(child => child.classList.contains('cell'))
+  
 
-    const allCells = Array.from(gridEl.children)
-              .filter(child => child.classList.contains('cell'))
-
-    allCells.forEach(cell => {
+    cells.forEach(cell => {
       cell.innerHTML = ''
     })
 
@@ -163,10 +179,10 @@ import aiIndicator4 from './images/indicators/aii4.png'
 
   function clearDisplay(...gridEls) {
     gridEls.forEach(gridEl => {
-      const imgElements = Array.from(gridEl.querySelectorAll('img'))
-        .filter(img => !img.classList.contains('ship-icon'))
+      const imgElements = Array.from(gridEl.querySelectorAll('img'))        
+      const notShipIcons = imgElements.filter(img => !img.classList.contains('ship-icon'))
   
-      imgElements.forEach(img => img.remove())
+      notShipIcons.forEach(img => img.remove())
     })
   }
 
@@ -204,20 +220,20 @@ import aiIndicator4 from './images/indicators/aii4.png'
   }
 
   //animations
-  function startWaterAnimation(grid1, grid2) {
-    generateWater(grid1, grid2)
+  function startWaterAnimation(gridEl1, gridEl2) {
+    generateWater(gridEl1, gridEl2)
     setInterval(() => {
-      swapFrame(grid1, grid2)
+      swapFrame(gridEl1, gridEl2)
     }, 1000)
   }
 
   function generateWater(...grids) {
 
-    grids.forEach((grid) => {
-      const children = Array.from(grid.children)
-              .filter(child => child.classList.contains('cell'))
+    grids.forEach((gridEl) => {
+      const allGridChildren = Array.from(gridEl.children)
+      const cells = allGridChildren.filter(child => child.classList.contains('cell'))
 
-      children.forEach((child, index) => {
+      cells.forEach((child, index) => {
         const rowIndex = Math.floor(index / 10)
 
         if (rowIndex % 2 === 0) { //even rows
@@ -235,7 +251,8 @@ import aiIndicator4 from './images/indicators/aii4.png'
 
   //
   function startFireAnimation(gridEl, pos) {
-    const cells = Array.from(gridEl.children)
+    const allGridChildren = Array.from(gridEl.children)
+    const cells = allGridChildren.filter(child => child.classList.contains('cell'))
 
     cells.forEach((cell) => {
       if (cell.getAttribute("data-index") == pos) {
@@ -245,7 +262,8 @@ import aiIndicator4 from './images/indicators/aii4.png'
   }
 
   function markHitAndRenderShipAnimation(gridEl, pos, ship, gameRound) {
-    const cells = Array.from(gridEl.children)
+    const allGridChildren = Array.from(gridEl.children)
+    const cells = allGridChildren.filter(child => child.classList.contains('cell'))
 
     cells.forEach((cell) => {
       if (cell.getAttribute("data-index") == pos) {
@@ -263,7 +281,8 @@ import aiIndicator4 from './images/indicators/aii4.png'
   }
 
   function markMissedShotAnimation(gridEl, pos) {
-    const cells = Array.from(gridEl.children)
+    const allGridChildren = Array.from(gridEl.children)
+    const cells = allGridChildren.filter(child => child.classList.contains('cell'))
 
     cells.forEach((cell) => {
       if (cell.getAttribute("data-index") == pos) {
@@ -273,7 +292,8 @@ import aiIndicator4 from './images/indicators/aii4.png'
   }
 
   function splashAnimation(gridEl, pos) {
-    const cells = Array.from(gridEl.children)
+    const allGridChildren = Array.from(gridEl.children)
+    const cells = allGridChildren.filter(child => child.classList.contains('cell'))
 
     cells.forEach((cell) => {
       if (cell.getAttribute("data-index") == pos) {
@@ -289,7 +309,8 @@ import aiIndicator4 from './images/indicators/aii4.png'
 
     playerID === "player" ? frames = playerShootFrames : frames = aiShootFrames
 
-    const cells = Array.from(gridEl.children)
+    const allGridChildren = Array.from(gridEl.children)
+    const cells = allGridChildren.filter(child => child.classList.contains('cell'))
 
     cells.forEach((cell) => {
       if (cell.getAttribute("data-index") == pos) {
@@ -303,12 +324,12 @@ import aiIndicator4 from './images/indicators/aii4.png'
   //water
   let isFirstWaterFrame = true
 
-  function swapFrame(...grids) {
-    grids.forEach((grid) => {
-      const children = Array.from(grid.children)
-              .filter(child => child.classList.contains('cell'))
+  function swapFrame(...gridsEls) {
+    gridsEls.forEach((gridEl) => {
+      const allGridChildren = Array.from(gridEl.children)
+      const cells = allGridChildren.filter(child => child.classList.contains('cell'))
               
-      children.forEach((child, index) => {
+      cells.forEach((child, index) => {
         const rowIndex = Math.floor(index / 10)
 
         //re-align based on state
@@ -440,6 +461,7 @@ import aiIndicator4 from './images/indicators/aii4.png'
     markMissedShotAnimation,
     showGameStart,
     showGameOver,
-    clearDisplay
+    clearDisplay,
+    toggleDifficultyDisplay
   }
  }
