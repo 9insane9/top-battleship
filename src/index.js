@@ -111,7 +111,7 @@ function backToMenuEvent() {
 }
 
 function toggleDifficultyEvent() {
-  sound.playClick()
+  sound.playDifficulty()
   render.toggleDifficultyDisplay()
   gameRound.menu().toggleDifficulty()
 }

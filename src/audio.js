@@ -3,6 +3,7 @@ import positive from './audio/positive.mp3'
 import negative from './audio/negative.mp3'
 import hover from './audio/hover.mp3'
 import click from './audio/click.mp3'
+import difficulty from './audio/difficulty.mp3'
 import start from './audio/start.mp3'
 import win from './audio/win.mp3'
 import lose from './audio/lose.mp3'
@@ -19,6 +20,7 @@ export const audio = function() {
   const mediaEls = {
     music: document.createElement('audio'),
     click: document.createElement('audio'),
+    difficulty: document.createElement('audio'),
     hover: document.createElement('audio'),
     positive: document.createElement('audio'),
     negative: document.createElement('audio'),
@@ -44,6 +46,9 @@ export const audio = function() {
   
     mediaEls.click.src = click
     mediaEls.click.volume = 0
+
+    mediaEls.difficulty.src = difficulty
+    mediaEls.difficulty.volume = 0
   
     mediaEls.hover.src = hover
     mediaEls.hover.volume = 0
@@ -116,6 +121,11 @@ export const audio = function() {
     mediaEls.click.currentTime = 0
     volumeMixer.sfx > 0 ? mediaEls.click.play() : null
   }
+
+  function playDifficulty() {
+    mediaEls.difficulty.currentTime = 0
+    volumeMixer.sfx > 0 ? mediaEls.difficulty.play() : null
+  }
   
   function playStart() {
     volumeMixer.sfx > 0 ? mediaEls.start.play() : null
@@ -160,6 +170,7 @@ export const audio = function() {
 
     mediaEls.click.volume = sfxVolume
     mediaEls.hover.volume = sfxVolume
+    mediaEls.difficulty.volume = sfxVolume
     mediaEls.positive.volume = sfxVolume
     mediaEls.negative.volume = sfxVolume
     mediaEls.start.volume = sfxVolume
@@ -173,6 +184,7 @@ export const audio = function() {
     playNegative,
     playHover,
     playClick,
+    playDifficulty,
     playStart,
     playEnd
   }
