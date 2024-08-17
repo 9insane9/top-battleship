@@ -97,18 +97,22 @@ export const audio = function() {
   }
 
   function playPositive() {
+    mediaEls.positive.currentTime = 0
     volumeMixer.sfx > 0 ? mediaEls.positive.play() : null
   }
   
   function playNegative() {
+    mediaEls.negative.currentTime = 0
     volumeMixer.sfx > 0 ? mediaEls.negative.play() : null
   }
   
   function playHover() {
+    mediaEls.hover.currentTime = 0
     volumeMixer.sfx > 0 ? mediaEls.hover.play() : null
   }
   
   function playClick() {
+    mediaEls.click.currentTime = 0
     volumeMixer.sfx > 0 ? mediaEls.click.play() : null
   }
   
