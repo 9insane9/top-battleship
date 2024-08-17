@@ -149,7 +149,7 @@ function updateDisplay(pos) {
       }, 1500)
       
     }
-  }, 1000)
+  }, 1250)
 }
 
 function resetGame(gameRound) {

@@ -267,7 +267,7 @@ import aiIndicator4 from './images/indicators/aii4.png'
 
     cells.forEach((cell) => {
       if (cell.getAttribute("data-index") == pos) {
-        startAnimation(cell, missFrames, true, 500, "missed") //replace with missedFrames
+        startAnimation(cell, missFrames, true, 500, "missed")
       }
     })
   }
@@ -283,6 +283,8 @@ import aiIndicator4 from './images/indicators/aii4.png'
   }
 
   function shootAnimation(gridEl, pos, playerID) {
+    console.log(`Playing shoot animation for ${playerID}`)
+
     let frames
 
     playerID === "player" ? frames = playerShootFrames : frames = aiShootFrames
@@ -291,7 +293,7 @@ import aiIndicator4 from './images/indicators/aii4.png'
 
     cells.forEach((cell) => {
       if (cell.getAttribute("data-index") == pos) {
-        startAnimation(cell, frames, false, 125, "no-class", 2000)
+        startAnimation(cell, frames, false, 250, "no-class", 2000)
       }
     })
   }

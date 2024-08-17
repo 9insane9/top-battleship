@@ -7,8 +7,12 @@ import start from './audio/start.mp3'
 import win from './audio/win.mp3'
 import lose from './audio/lose.mp3'
 
+import soundOff from './images/soundOff.svg'
+import soundOn from './images/soundOn.svg'
+
 export const audio = function() {
   const soundBtnEl = document.querySelector('.sound-btn')
+  const soundBtnImageEl = document.querySelector('.sound-btn-image')
   const musicEl = document.createElement('audio')
   const effectEl = document.createElement('audio')
   const menuSoundEl = document.createElement('audio')
@@ -19,6 +23,7 @@ export const audio = function() {
 
   musicEl.setAttribute('loop', 'loop')
 
+  soundBtnImageEl.src = soundOff
   musicEl.style.display = "none"
   effectEl.style.display = "none"
   winLoseEl.style.display = "none"
@@ -38,21 +43,21 @@ export const audio = function() {
       effectEl.volume = 0.35
       winLoseEl.volume = 0.6
       menuSoundEl.volume = 0.5
-      soundBtnEl.textContent = '🔊'
-      // soundBtnEl.textContent = '\u{1F50A}'
+      // soundBtnEl.textContent = '🔊'
+      soundBtnImageEl.src = soundOn
       musicEl.play()
       } else if (isMusicStarted && isMusicPlaying) {
         isMusicPlaying = false
-        soundBtnEl.textContent = '🔇'
-        // soundBtnEl.textContent = '\u{1F507}'
+        // soundBtnEl.textContent = '🔇'
+        soundBtnImageEl.src = soundOff
         musicEl.volume = 0
         effectEl.volume = 0
         menuSoundEl.volume = 0
         winLoseEl.volume = 0
       } else if (isMusicStarted && !isMusicPlaying) {
         isMusicPlaying = true
-        soundBtnEl.textContent = '🔊'
-        // soundBtnEl.textContent = '\u{1F50A}'
+        // soundBtnEl.textContent = '🔊'
+        soundBtnImageEl.src = soundOn
         musicEl.volume = 0.8
         effectEl.volume = 0.35
         menuSoundEl.volume = 0.5
