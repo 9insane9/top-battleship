@@ -127,7 +127,6 @@ const Gameboard = function() {
       allShipPositions.push(...validPositions)
     })
 
-    console.log(`Valid positions for cheating: ${allShipPositions}`)
     return allShipPositions
   }
 

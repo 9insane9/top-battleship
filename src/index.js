@@ -76,7 +76,7 @@ function fireShotEvent(event) {
   const aiShotsReceived = gameRound.boards.ai.shotsReceived
   const isNewPosition = !aiShotsReceived.includes(pos)
 
-  console.log(`All shots received by AI: ${aiShotsReceived}`)
+  // console.log(`All shots received by AI: ${aiShotsReceived}`)
  
   if (isNewPosition) {
     console.log(`Firing shot at: ${pos}`)
@@ -107,7 +107,7 @@ function backToMenuEvent() {
   gameOverEl.classList.add('invisible')
   menuEl.classList.remove('invisible')
 
-  resetGame(gameRound)
+  resetGameEvent(gameRound)
 }
 
 function toggleDifficultyEvent() {
@@ -163,7 +163,7 @@ function updateDisplay(pos) {
   }, 1250)
 }
 
-function resetGame(gameRound) {
+function resetGameEvent(gameRound) {
   gameRound.playAgain()
 
   render.clearDisplay(playerGridEl, aiGridEl)
@@ -190,53 +190,8 @@ function fireAroundShipIfSunk(gridEl, board, pos) {
   }
 }
 
-//Calculation problem, currently doesnt account of valid adjacent is on previous or next row
-// function getSunkShipNewAdjacents(board, pos) {
-//   console.log("Checking if adjacents needed...")
-//   const alreadyShot = board.shotsReceived
-//   const allPotentialCoordinates = []
-//   let shipCoordinates = []
-//   const shipID = board.boardState[pos]
-//   console.log(`Ship is: ${shipID}`)
-
-//   if (shipID) {
-//     const ship = board.fleet[shipID]
-    
-//     if (ship.status.isSunk) { 
-//       shipCoordinates = ship.status.position 
-//     }
-//   }
-  
-//   if (shipCoordinates.length > 0) {
-//     shipCoordinates.forEach((coordinate) => {
-//       allPotentialCoordinates.push(coordinate - 11) //top-left
-//       allPotentialCoordinates.push(coordinate - 10) //top
-//       allPotentialCoordinates.push(coordinate - 9)  //top-right
-//       allPotentialCoordinates.push(coordinate - 1)  //left
-//       allPotentialCoordinates.push(coordinate + 1)  //right
-//       allPotentialCoordinates.push(coordinate + 9)  //bottom-left
-//       allPotentialCoordinates.push(coordinate + 10) //bottom
-//       allPotentialCoordinates.push(coordinate + 11) //bottom-right
-//     })
-
-//     const inBoundsCoordinates = allPotentialCoordinates.filter(coordinate =>
-//       coordinate >= 0 && coordinate <= 99
-//     )
-//     console.log(inBoundsCoordinates)
-
-//     const newAdjacentCoordinates = inBoundsCoordinates.filter(coordinate =>
-//       !alreadyShot.includes(coordinate)
-//     )
-
-//       console.log(`new sunk adjacents: ${newAdjacentCoordinates}`)
-//     return newAdjacentCoordinates
-//   }
-
-//   return []
-// }
-
 function getSunkShipNewAdjacents(board, pos) {
-  console.log("Checking if adjacents needed...");
+  console.log("Checking if adjacents needed...")
   const alreadyShot = board.shotsReceived;
   const allPotentialCoordinates = []
   let shipCoordinates = []
@@ -277,8 +232,8 @@ function getSunkShipNewAdjacents(board, pos) {
         ) {
           allPotentialCoordinates.push(newCoordinate);
         }
-      });
-    });
+      })
+    })
 
     // remove duplicates and filter out already shot positions
     const uniqueCoordinates = Array.from(new Set(allPotentialCoordinates));
@@ -286,7 +241,7 @@ function getSunkShipNewAdjacents(board, pos) {
       (coordinate) => !alreadyShot.includes(coordinate)
     )
 
-    console.log(`new sunk adjacents: ${newAdjacentCoordinates}`)
+    console.log(`Adjacent positions sunk: ${newAdjacentCoordinates}`)
     return newAdjacentCoordinates
   }
 

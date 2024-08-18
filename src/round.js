@@ -27,9 +27,9 @@ const round = function (randomLayoutFn = genRandomLayout) {
       if (gameStarted) throw new Error('Cannot change difficulty mid game!')
 
       if (difficultyValue === 0) {
-        difficultyValue = 0.3
+        difficultyValue = 0.2
 
-      } else if (difficultyValue === 0.3) {
+      } else if (difficultyValue === 0.2) {
         difficultyValue = 0.95
 
       } else if (difficultyValue === 0.95) {
@@ -135,6 +135,7 @@ function aiAttackFn() {
     const diceResult = Math.random()
 
     if (diceResult > valueToBeat && validCheatPositions.length > 0) { //if cheating
+      console.log(`Valid positions for cheating: ${validCheatPositions}`)
       aiAttackPos = validCheatPositions[Math.floor(Math.random() * validCheatPositions.length)]
       console.log(`cheatingAi attacking at ${aiAttackPos}`)
     } else { //if not cheating
