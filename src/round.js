@@ -27,9 +27,9 @@ const round = function (randomLayoutFn = genRandomLayout) {
       if (gameStarted) throw new Error('Cannot change difficulty mid game!')
 
       if (difficultyValue === 0) {
-        difficultyValue = 0.2
+        difficultyValue = 0.02
 
-      } else if (difficultyValue === 0.2) {
+      } else if (difficultyValue === 0.02) {
         difficultyValue = 0.95
 
       } else if (difficultyValue === 0.95) {

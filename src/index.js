@@ -135,7 +135,7 @@ function updateDisplay(pos) {
     render.markHitAndRenderShipAnimation(aiGridEl, pos, aiShipInFleet, gameRound)
 
     //fire around sunk ships here
-    fireAroundShipIfSunk(aiGridEl, gameRound.boards.ai, pos)
+    autoFireAtPointless(aiGridEl, gameRound.boards.ai, pos)
 
   } else { //on miss for player
     sound.playNegative()
@@ -150,7 +150,7 @@ function updateDisplay(pos) {
     if (playerShipInFleet) { //ai on hit
       render.shootAnimation(playerGridEl, aiHitPos, "ai")
       render.startFireAnimation(playerGridEl, aiHitPos)
-      fireAroundShipIfSunk(playerGridEl, gameRound.boards.player, aiHitPos)
+      autoFireAtPointless(playerGridEl, gameRound.boards.player, aiHitPos)
     } else { //ai on miss
       render.shootAnimation(playerGridEl, aiHitPos, "ai")
       render.splashAnimation(playerGridEl, aiHitPos)
@@ -172,8 +172,9 @@ function resetGameEvent(gameRound) {
 }
 
 //hep
-function fireAroundShipIfSunk(gridEl, board, pos) {
-  const targetsArr = getSunkShipNewAdjacents(board, pos)
+function autoFireAtPointless(gridEl, board, pos) {
+  const targetsArr = getPointlessPositions(board, pos)
+  board.shotsReceived.push(...targetsArr) //not here maybe, game state thing
 
   if (targetsArr.length > 0) {
     targetsArr.forEach((target) => {
@@ -185,65 +186,193 @@ function fireAroundShipIfSunk(gridEl, board, pos) {
         render.markMissedShotAnimation(gridEl, target.toString())
       }) 
     }, 1000)
-
-    board.shotsReceived.push(...targetsArr) //not here maybe, game state thing
   }
 }
 
-function getSunkShipNewAdjacents(board, pos) {
-  console.log("Checking if adjacents needed...")
+// function getPointlessPositions(board, pos) {
+//   console.log("Checking if adjacents needed...")
+//   const alreadyShot = board.shotsReceived;
+//   const allPotentialCoordinates = []
+//   let shipCoordinates = []
+//   const shipID = board.boardState[pos]
+//   console.log(`Ship is: ${shipID}`)
+
+//   if (shipID) {
+//     const ship = board.fleet[shipID]
+
+//     if (ship.status.isSunk) {
+//       shipCoordinates = ship.status.position
+//     }
+//   }
+
+//   if (shipCoordinates.length > 0) {
+//     // directions: left, right, top, bottom, and diagonals
+//     const directions = [
+//       -11, -10, -9, // Top-left, Top, Top-right
+//       -1,          // Left
+//       1,           // Right
+//       9, 10, 11    // Bottom-left, Bottom, Bottom-right
+//     ]
+
+//     shipCoordinates.forEach((coordinate) => {
+//       directions.forEach((dir) => {
+//         const newCoordinate = coordinate + dir
+
+//         // ensure the new coordinate is within bounds
+//         const rowDiff = Math.floor(newCoordinate / 10) - Math.floor(coordinate / 10);
+//         const colDiff = (newCoordinate % 10) - (coordinate % 10)
+
+//         // only add the coordinate if it's within the grid bounds and valid
+//         if (
+//           newCoordinate >= 0 &&
+//           newCoordinate <= 99 &&
+//           Math.abs(rowDiff) <= 1 && // Row difference should be -1, 0, or 1
+//           Math.abs(colDiff) <= 1 // Column difference should be -1, 0, or 1
+//         ) {
+//           allPotentialCoordinates.push(newCoordinate);
+//         }
+//       })
+//     })
+
+//     // remove duplicates and filter out already shot positions
+//     const uniqueCoordinates = Array.from(new Set(allPotentialCoordinates));
+//     const newAdjacentCoordinates = uniqueCoordinates.filter(
+//       (coordinate) => !alreadyShot.includes(coordinate)
+//     )
+
+//     console.log(`Adjacent positions sunk: ${newAdjacentCoordinates}`)
+//     return newAdjacentCoordinates
+//   }
+
+//   return []
+// }
+
+
+//hep v2
+
+// function autoFireAtPointless(gridEl, board, pos) { // new name
+//   const targetsArr = getPointlessPositions(board, pos);
+//   board.shotsReceived.push(...targetsArr); // adjust game state
+
+//   if (targetsArr.length > 0) {
+//     targetsArr.forEach((target) => {
+//       render.splashAnimation(gridEl, target.toString());
+//     });
+
+//     setTimeout(() => { 
+//       targetsArr.forEach((target) => {
+//         render.markMissedShotAnimation(gridEl, target.toString());
+//       }); 
+//     }, 1000);
+//   }
+// }
+
+function getPointlessPositions(board, pos) { // new name also
+  console.log("Getting pointless positions...");
+  
   const alreadyShot = board.shotsReceived;
-  const allPotentialCoordinates = []
-  let shipCoordinates = []
-  const shipID = board.boardState[pos]
-  console.log(`Ship is: ${shipID}`)
+  const allPotentialCoordinates = [];
+  const shipID = board.boardState[pos];
+  const ship = board.fleet[shipID];
+  let sunkShipCoordinates = []; // initialize
+  
+  console.log(`Ship is: ${shipID}`);
 
-  if (shipID) {
-    const ship = board.fleet[shipID]
-
-    if (ship.status.isSunk) {
-      shipCoordinates = ship.status.position
-    }
+  if (ship.status.isSunk) {
+    sunkShipCoordinates = ship.status.position; // if sunk, get coordinates
   }
-
-  if (shipCoordinates.length > 0) {
-    // directions: left, right, top, bottom, and diagonals
+  
+  // Scenario 1 - IF SHIP IS SUNK
+  if (sunkShipCoordinates.length > 0) {
+    console.log('Ship was sunk, getting all adjacents');
+    
     const directions = [
-      -11, -10, -9, // Top-left, Top, Top-right
-      -1,          // Left
-      1,           // Right
-      9, 10, 11    // Bottom-left, Bottom, Bottom-right
-    ]
+      -11, -10, -9,  // Top-left, Top, Top-right
+      -1,            // Left
+      1,             // Right
+      9, 10, 11      // Bottom-left, Bottom, Bottom-right
+    ];
 
-    shipCoordinates.forEach((coordinate) => {
+    sunkShipCoordinates.forEach((coordinate) => {
       directions.forEach((dir) => {
-        const newCoordinate = coordinate + dir
+        const newCoordinate = coordinate + dir;
 
         // ensure the new coordinate is within bounds
         const rowDiff = Math.floor(newCoordinate / 10) - Math.floor(coordinate / 10);
-        const colDiff = (newCoordinate % 10) - (coordinate % 10)
+        const colDiff = (newCoordinate % 10) - (coordinate % 10);
 
-        // only add the coordinate if it's within the grid bounds and valid
+        // only add the coordinate if it's within the grid bounds
         if (
           newCoordinate >= 0 &&
           newCoordinate <= 99 &&
-          Math.abs(rowDiff) <= 1 && // Row difference should be -1, 0, or 1
-          Math.abs(colDiff) <= 1 // Column difference should be -1, 0, or 1
+          Math.abs(rowDiff) <= 1 &&  // Row difference should be -1, 0, or 1
+          Math.abs(colDiff) <= 1     // Column difference should be -1, 0, or 1
         ) {
           allPotentialCoordinates.push(newCoordinate);
         }
-      })
-    })
+      });
+    });
+  
+  // Scenario 2 - ship wasn't sunk
+  } else if (sunkShipCoordinates.length === 0) {
+    // hit diagonals, still need to account for rowDiff and colDiff
+    const directions = [-11, -9, 9, 11]; // Diagonal directions only
 
-    // remove duplicates and filter out already shot positions
-    const uniqueCoordinates = Array.from(new Set(allPotentialCoordinates));
-    const newAdjacentCoordinates = uniqueCoordinates.filter(
-      (coordinate) => !alreadyShot.includes(coordinate)
-    )
+    directions.forEach((dir) => {
+      const newCoordinate = pos + dir;
 
-    console.log(`Adjacent positions sunk: ${newAdjacentCoordinates}`)
-    return newAdjacentCoordinates
+      const rowDiff = Math.floor(newCoordinate / 10) - Math.floor(pos / 10);
+      const colDiff = (newCoordinate % 10) - (pos % 10);
+
+      if (
+        newCoordinate >= 0 &&
+        newCoordinate <= 99 &&
+        Math.abs(rowDiff) === 1 && 
+        Math.abs(colDiff) === 1
+      ) {
+        allPotentialCoordinates.push(newCoordinate);
+      }
+    });
   }
+      
+  // then hit adjacents in all situations just in case, every time
+  const adjacentHits = [
+    pos - 1,  // Left
+    pos + 1,  // Right
+    pos - 10, // Top
+    pos + 10  // Bottom
+  ];
 
-  return []
+  adjacentHits.forEach((adjacent) => {
+    if (alreadyShot.includes(adjacent) && board.boardState[adjacent]) { 
+      // if there's an adjacent hit on the left/right, shoot up/down
+      if (adjacent === pos - 1 || adjacent === pos + 1) {
+        const up = pos - 10;
+        const down = pos + 10;
+        if (up >= 0) allPotentialCoordinates.push(up);
+        if (down <= 99) allPotentialCoordinates.push(down);
+      }
+
+      // If there's an adjacent hit on the top/bottom, shoot left/right
+      if (adjacent === pos - 10 || adjacent === pos + 10) {
+        const left = pos - 1;
+        const right = pos + 1;
+        if (left >= 0 && Math.floor(left / 10) === Math.floor(pos / 10)) {       
+          allPotentialCoordinates.push(left);
+        }
+        if (right <= 99 && Math.floor(right / 10) === Math.floor(pos / 10)) {
+          allPotentialCoordinates.push(right);
+        }
+      }
+    }
+  });
+  
+  // After all done: remove duplicates and filter out already shot positions
+  const uniqueCoordinates = Array.from(new Set(allPotentialCoordinates));
+  const newPointless = uniqueCoordinates.filter(
+    (coordinate) => !alreadyShot.includes(coordinate)
+  );
+
+  console.log(`New pointless positions to shoot: ${newPointless}`);
+  return newPointless;
 }

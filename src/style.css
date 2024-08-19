@@ -38,6 +38,24 @@ body, html {
     box-sizing: border-box;
 }
 
+.game-container::before {
+    z-index: 6000;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.1), /* Dark stripe */
+        rgba(0, 0, 0, 0.1) 2px,
+        transparent 2px,
+        transparent 4px  /* Transparent stripe */
+    );
+    pointer-events: none; /* Allows interaction with content below */
+}
+
 .thanks {
     z-index: 1000;
     position: absolute;
