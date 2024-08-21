@@ -1,9 +1,21 @@
-Battleship project for The Odin Project
+# Battleship project for The Odin Project
 
-Retro Handheld Aesthetic - pixel art graphics, chiptune music and sound effects to emulate classic handheld consoles
+## [Play here!](https://9insane9.github.io/top-battleship/)
 
-Random Ship Layout Generation - fallback to default if generation takes too long
+### Retro Handheld Aesthetic
 
-Three difficulty levels - Easy, Normal and Impossible
+pixel art graphics and animations with a CRT-style overlay
+chiptune music and sound effects to emulate classic handheld consoles
 
-Screen Adaptability - fully responsive and playable with various screen sizes
+### Random Ship Layout Generation
+
+with a fallback to default if generation takes too long
+
+### Three difficulty levels
+
+Easy, Normal and Impossible
+
+### Screen Adaptability
+
+fully responsive and playable on screens of various sizes:
+330px -> browser zoom to full screen
