@@ -1,4 +1,4 @@
-# Battleship project for The Odin Project
+Battleship project for The Odin Project
 
 ## [Play it here!](https://9insane9.github.io/top-battleship/)
 
