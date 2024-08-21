@@ -1,6 +1,6 @@
 # Battleship project for The Odin Project
 
-## [Play here!](https://9insane9.github.io/top-battleship/)
+## [Play it here!](https://9insane9.github.io/top-battleship/)
 
 ### Retro Handheld Aesthetic
 
