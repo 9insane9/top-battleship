@@ -29,9 +29,9 @@ const round = function (randomLayoutFn = genRandomLayout) {
         difficultyValue = 0.02
 
       } else if (difficultyValue === 0.02) {
-        difficultyValue = 0.95
+        difficultyValue = 0.65
 
-      } else if (difficultyValue === 0.95) {
+      } else if (difficultyValue === 0.65) {
         difficultyValue = 0
       }
       console.log(`Cheat% set to: ${difficultyValue}`)
