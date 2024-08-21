@@ -28,8 +28,9 @@ import aiIndicator3 from './images/indicators/aii3.png'
 import aiIndicator4 from './images/indicators/aii4.png'
 
  export const display = function() {
+  //organize animation speeds into an object
 
-  const fireFrames = [flame1, flame2, flame3]
+  const fireFrames = [flame1, flame2, flame3] //could pack all frames into an object
   const hitFrames = [mark1, mark2]
   const missFrames = [miss1, miss2]
   const splashFrames = [splash1, splash2, splash3]
@@ -70,6 +71,28 @@ import aiIndicator4 from './images/indicators/aii4.png'
       aiGridContainer.appendChild(divAi)
     }
     console.log('Grids created!')
+  }
+
+  function generateWater(...grids) {
+
+    grids.forEach((gridEl) => {
+      const allGridChildren = Array.from(gridEl.children)
+      const cells = allGridChildren.filter(child => child.classList.contains('cell'))
+
+      cells.forEach((child, index) => {
+        const rowIndex = Math.floor(index / 10)
+
+        if (rowIndex % 2 === 0) { //even rows
+          child.style.backgroundImage = `url('${wave1}')`
+        } else { // odd rows
+          child.style.backgroundImage = `url('${wave2}')`
+        }
+
+        child.style.overflow = "hidden"
+        child.style.backgroundSize = "cover"
+        child.style.backgroundRepeat = "no-repeat"
+      })
+    })
   }
 
   function generateIndicators() {
@@ -205,18 +228,16 @@ import aiIndicator4 from './images/indicators/aii4.png'
     const playerShipsLeft = gameRound.boards.player.countShipsLeft()
     const aiShipsLeft = gameRound.boards.ai.countShipsLeft()
 
-    playerIndicatorStates.ships1.textContent = playerShipsLeft.ships1;
-    playerIndicatorStates.ships2.textContent = playerShipsLeft.ships2;
-    playerIndicatorStates.ships3.textContent = playerShipsLeft.ships3;
-    playerIndicatorStates.ships4.textContent = playerShipsLeft.ships4;
+    playerIndicatorStates.ships1.textContent = playerShipsLeft.ships1
+    playerIndicatorStates.ships2.textContent = playerShipsLeft.ships2
+    playerIndicatorStates.ships3.textContent = playerShipsLeft.ships3
+    playerIndicatorStates.ships4.textContent = playerShipsLeft.ships4
 
     // Update AI indicators
-    aiIndicatorStates.ships1.textContent = aiShipsLeft.ships1;
-    aiIndicatorStates.ships2.textContent = aiShipsLeft.ships2;
-    aiIndicatorStates.ships3.textContent = aiShipsLeft.ships3;
-    aiIndicatorStates.ships4.textContent = aiShipsLeft.ships4;
-
-    console.log("Indicators updated!")
+    aiIndicatorStates.ships1.textContent = aiShipsLeft.ships1
+    aiIndicatorStates.ships2.textContent = aiShipsLeft.ships2
+    aiIndicatorStates.ships3.textContent = aiShipsLeft.ships3
+    aiIndicatorStates.ships4.textContent = aiShipsLeft.ships4
   }
 
   //animations
@@ -227,29 +248,6 @@ import aiIndicator4 from './images/indicators/aii4.png'
     }, 1000)
   }
 
-  function generateWater(...grids) {
-
-    grids.forEach((gridEl) => {
-      const allGridChildren = Array.from(gridEl.children)
-      const cells = allGridChildren.filter(child => child.classList.contains('cell'))
-
-      cells.forEach((child, index) => {
-        const rowIndex = Math.floor(index / 10)
-
-        if (rowIndex % 2 === 0) { //even rows
-          child.style.backgroundImage = `url('${wave1}')`
-        } else { // odd rows
-          child.style.backgroundImage = `url('${wave2}')`
-        }
-
-        child.style.overflow = "hidden"
-        child.style.backgroundSize = "cover"
-        child.style.backgroundRepeat = "no-repeat"
-      })
-    })
-  }
-
-  //
   function startFireAnimation(gridEl, pos) {
     const allGridChildren = Array.from(gridEl.children)
     const cells = allGridChildren.filter(child => child.classList.contains('cell'))
@@ -303,7 +301,6 @@ import aiIndicator4 from './images/indicators/aii4.png'
   }
 
   function shootAnimation(gridEl, pos, playerID) {
-    console.log(`Playing shoot animation for ${playerID}`)
 
     let frames
 

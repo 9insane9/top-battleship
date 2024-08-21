@@ -1,6 +1,5 @@
 const Gameboard = require('./gameboard')
 const genRandomLayout = require('./random')
-// const ai = require('./ai')
 
 const round = function (randomLayoutFn = genRandomLayout) {
   const boards = {
@@ -35,7 +34,7 @@ const round = function (randomLayoutFn = genRandomLayout) {
       } else if (difficultyValue === 0.95) {
         difficultyValue = 0
       }
-      console.log(`difficulty set to ${difficultyValue}`)
+      console.log(`Cheat% set to: ${difficultyValue}`)
     }
 
     function startGame() {
@@ -87,10 +86,8 @@ const round = function (randomLayoutFn = genRandomLayout) {
   }
 
   function playAgain() {
-    // if (!gameStarted) throw new Error(`Play "again"? You haven't even started!`)
     gameStarted = false
     gameOver = false
-    // if (gameStarted && !gameOver) throw new Error('Finish current game!')
 
     boards.player.initializeBoard()
     boards.ai.initializeBoard()
@@ -137,14 +134,14 @@ function aiAttackFn() {
     if (diceResult > valueToBeat && validCheatPositions.length > 0) { //if cheating
       console.log(`Valid positions for cheating: ${validCheatPositions}`)
       aiAttackPos = validCheatPositions[Math.floor(Math.random() * validCheatPositions.length)]
-      console.log(`cheatingAi attacking at ${aiAttackPos}`)
-    } else { //if not cheating
+      console.log(`Cheating AI attacking at: ${aiAttackPos}`)
 
+    } else { //if not cheating
       do {
         aiAttackPos = Math.floor(Math.random() * 100)
       } while (playerBoard.shotsReceived.includes(aiAttackPos))
 
-      console.log(`randomAi attacking at ${aiAttackPos}`)
+      console.log(`Random AI attacking at: ${aiAttackPos}`)
     }
 
     playerBoard.receiveAttack(aiAttackPos)
@@ -152,7 +149,7 @@ function aiAttackFn() {
   }
 
   function getState() {
-    return "no state, dis random"
+    return ""
   }
   
   return { attack, getState }

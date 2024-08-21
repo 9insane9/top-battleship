@@ -66,7 +66,7 @@ const Gameboard = function() {
     shotsReceived.push(pos)
 
     if (boardState[pos] !== '') {
-      console.log(`Board: Attack successfully received at ${pos}`)
+      // console.log(`Board: Attack successfully received at ${pos}`)
       return fleet[boardState[pos]].hit()
     }
   }

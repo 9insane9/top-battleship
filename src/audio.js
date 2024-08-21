@@ -101,7 +101,7 @@ export const audio = function() {
       setVolumes(volumeMixer.music, volumeMixer.sfx)      
     })
   }
-
+  //most of these could be in a single function
   function playPositive() {
     mediaEls.positive.currentTime = 0
     volumeMixer.sfx > 0 ? mediaEls.positive.play() : null

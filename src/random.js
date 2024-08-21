@@ -39,32 +39,6 @@ function genRandomLayout(playerBoard, randomPlacementFn = genRandomPlacement, ma
   const fleet = playerBoard.fleet
   let totalAttempts = 0
 
-  function tryPlaceShip(shipID) {
-    let placed = false
-    let attempts = 0
-
-    while (!placed && attempts < maxAttempts) {
-      try {
-        const placement = randomPlacementFn(playerBoard)
-        playerBoard.placeShip(shipID, placement.position, placement.orientation)
-        placed = true
-      } catch (error) {
-        attempts++
-        console.error(`Error placing ship ${shipID}: ${error.message}. Attempt ${attempts}/${maxAttempts}`)
-      }
-
-      totalAttempts++
-      if (totalAttempts >= maxAttempts * Object.keys(fleet).length) {
-        console.error('Max total attempts reached. Retry or handle the failure.')
-        throw new Error('Failed to place all ships after maximum attempts.')
-      }
-    }
-
-    if (!placed) {
-      throw new Error(`Failed to place ship ${shipID} after ${maxAttempts} attempts.`)
-    }
-  }
-
   for (const shipID of Object.keys(fleet)) {
     let attempts = 0
     while (attempts < retryAttempts) {
@@ -85,6 +59,32 @@ function genRandomLayout(playerBoard, randomPlacementFn = genRandomPlacement, ma
     }
   }
 
+  function tryPlaceShip(shipID) {
+    let placed = false
+    let attempts = 0
+
+    while (!placed && attempts < maxAttempts) {
+      try {
+        const placement = randomPlacementFn(playerBoard)
+        playerBoard.placeShip(shipID, placement.position, placement.orientation)
+        placed = true
+      } catch (error) {
+        attempts++
+        console.error(`Error placing ship ${shipID}: ${error.message}. Attempt ${attempts}/${maxAttempts}`)
+      }
+
+      totalAttempts++
+      if (totalAttempts >= maxAttempts * Object.keys(fleet).length) {
+        console.error('Max total attempts reached.')
+        throw new Error('Failed to place all ships after maximum attempts.')
+      }
+    }
+
+    if (!placed) {
+      throw new Error(`Failed to place ship ${shipID} after ${maxAttempts} attempts.`)
+    }
+  }
+
   return playerBoard
 }
 
@@ -100,6 +100,5 @@ function genRandomPlacement(playerBoard) {
     orientation: orientation,
   }
 }
-
 
 module.exports = genRandomLayout
